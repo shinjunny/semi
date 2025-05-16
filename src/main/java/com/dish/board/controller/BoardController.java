@@ -1,7 +1,10 @@
 package com.dish.board.controller;
 
 import com.dish.board.vo.BoardVO;
+import com.dish.board.vo.MemberVO;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 import com.dish.board.service.BoardService;
@@ -64,10 +67,15 @@ public class BoardController {
     // 글 등록
     @PostMapping("/type/{boardType}/write")
     public String write(@PathVariable String boardType,
-                        @ModelAttribute BoardVO board) {
-        board.setBoardType(boardType); // URL에서 받은 유형 적용
-        board.setCreator("admin"); // 실제 로그인 사용자 정보로 대체
-        board.setModifier("admin");
+                        @ModelAttribute BoardVO board,
+                        HttpServletRequest request) {
+    	
+    	HttpSession session = request.getSession();
+    	MemberVO member = (MemberVO) session.getAttribute("userInfo");
+    	
+        board.setBoardType(boardType);
+        board.setCreator(member.getUserId());
+        board.setModifier(member.getUserId());
         boardService.createBoard(board);
         return "redirect:/board/type/" + boardType;
     }
