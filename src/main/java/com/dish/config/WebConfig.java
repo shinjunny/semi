@@ -20,5 +20,5 @@ public class WebConfig implements WebMvcConfigurer {
 				.addPathPatterns("/search/**")
 		        .excludePathPatterns("/member/login", "/member/signup");
 	}
-	// 최신
+	// 2025-05-16 이태윤
 }
