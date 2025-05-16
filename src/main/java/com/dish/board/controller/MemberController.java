@@ -20,6 +20,8 @@ import com.dish.board.service.MemberService;
 import com.dish.board.vo.BoardVO;
 import com.dish.board.vo.MemberVO;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,11 +85,5 @@ public class MemberController {
         return "redirect:/member/login";
     }
     
-    // 아이디 중복 확인
-    @GetMapping("/checkId")
-    @ResponseBody
-    public Map<String, Boolean> checkDuplicateId(@RequestParam String userId) {
-        boolean exists = memberService.isUserIdExists(userId);
-        return Collections.singletonMap("exists", exists);
-    }
+    
 }
