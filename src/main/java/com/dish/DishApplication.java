@@ -12,4 +12,5 @@ public class DishApplication {
 		SpringApplication.run(DishApplication.class, args);
 	}
 // 커밋용
+// 커밋
 }
