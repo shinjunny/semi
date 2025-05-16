@@ -5,10 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dish.board.service.BoardService;
 import com.dish.board.vo.BoardVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
@@ -35,5 +38,13 @@ public class HomeController {
         }
         model.addAttribute("boardType", boardType);
         return "board/list";
+    }
+    
+    // 로그아웃
+    @PostMapping("/member/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("userInfo");
+
+        return "redirect:/";
     }
 }

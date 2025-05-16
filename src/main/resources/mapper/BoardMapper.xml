@@ -6,7 +6,6 @@
         SELECT * FROM BOARD ORDER BY BOARD_NUM DESC
     </select>
     
-    <!-- 유형별 게시글 조회 -->
     <select id="selectBoardsByType" resultType="com.dish.board.vo.BoardVO">
         SELECT * FROM board
         WHERE board_type = #{boardType}
@@ -47,4 +46,5 @@
         WHERE board_type = #{boardType}
         AND board_title LIKE '%' || #{title} || '%'
     </select>
+    
 </mapper>
