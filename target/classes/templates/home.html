@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 홈</title>
+</head>
+<body>
+    <h1>홈</h1>	
+	<!-- 게시판 유형 선택 -->
+    <select id="boardSelect">
+		<option value="01" hidden>유형을 선택하세요.</option>
+        <option value="01">동네 맛집</option>
+        <option value="02">지역 먹거리 축제</option>
+        <option value="03">오늘의 레시피</option>
+        <option value="04">푸드 커뮤니티</option>
+        <option value="05">점심 메뉴 추천</option>
+    </select>
+    <!-- 제목 검색 -->
+    <label for="titleInput"></label>
+    <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
+    <button onclick="searchPost()">검색</button>
+	<br/>
+    <div class="board-links">
+		<!-- 게시판 유형별 링크 -->
+        <a href="/board/type/01">동네 맛집</a><br/>
+        <a href="/board/type/02">지역 먹거리 축제</a><br/>
+        <a href="/board/type/03">오늘의 레시피</a><br/>
+        <a href="/board/type/04">푸드 커뮤니티</a><br/>
+        <a href="/board/type/05">점심 메뉴 추천</a><br/>
+    </div>
+	<script>
+		function searchPost() {
+            var boardType = document.getElementById("boardSelect").value;
+            var title = document.getElementById("titleInput").value;
+
+            if (boardType && title) {
+                // 제목이 입력되었고 게시판 유형이 선택되었으면 해당 제목으로 검색
+                window.location.href = '/search?boardType=' + boardType + '&title=' + encodeURIComponent(title);
+            } else {
+                alert('게시판 유형과 제목을 입력해주세요.');
+            }
+        }
+    </script>
+</body>
+</html>

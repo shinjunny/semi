@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>게시글 수정</title>
+</head>
+<body>
+    <h1>글 수정</h1>
+    <!-- boardType을 포함한 수정 요청 -->
+    <form th:action="@{/board/type/{boardType}/edit(boardType=${boardType})}" method="post">
+        <input type="hidden" name="boardNum" th:value="${board.boardNum}" />
+        <input type="hidden" name="boardType" th:value="${board.boardType}" /> <!-- 값을 유지 -->
+
+        제목: <input type="text" name="boardTitle" th:value="${board.boardTitle}" /><br/>
+        유형: <span th:text="${board.boardType}">유형</span><br/> <!-- 보통 수정은 막는 게 안전 -->
+        내용:<br/>
+        <textarea name="boardComment" rows="5" cols="40" th:text="${board.boardComment}"></textarea><br/>
+        <button type="submit">수정</button>
+    </form>
+    <!-- 목록 링크 -->
+    <a th:href="@{/board/type/{boardType}(boardType=${boardType})}">목록으로</a>
+</body>
+</html>
