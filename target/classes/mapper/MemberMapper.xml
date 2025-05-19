@@ -49,4 +49,22 @@
         AND USER_PW = #{userPw}
     </select>
     
+    <!-- 내 정보 -->
+    <select id="findByUserId" parameterType="String" resultType="com.dish.board.vo.MemberVO">
+        SELECT 
+        	USER_ID
+            , USER_PW
+            , USER_NAME
+            , USER_PHONE1
+            , USER_PHONE2
+            , USER_PHONE3
+            , USER_ADDR1
+            , USER_ADDR2
+            , USER_COMPANY
+        FROM 
+            USER_INFO
+        WHERE 
+            USER_ID = #{userId}
+    </select>
+    
 </mapper>

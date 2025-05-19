@@ -29,4 +29,10 @@ public class MemberServiceImpl implements MemberService {
 	public MemberVO login(MemberVO member) {
 		return memberMapper.selectByIdAndPassword(member);
 	}
+	
+	// 내 정보
+	@Override
+    public MemberVO findByUserId(String userId) {
+        return memberMapper.findByUserId(userId);
+    }
 }

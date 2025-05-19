@@ -1,6 +1,7 @@
 package com.dish.board.controller;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -29,9 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 	
 	private final MemberService memberService;
+	private final BoardService boardService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, BoardService boardService) {
     	this.memberService = memberService;
+    	this.boardService = boardService;
     }
     
     // 로그인 폼
@@ -89,5 +92,25 @@ public class MemberController {
     public Map<String, Boolean> checkDuplicateId(@RequestParam String userId) {
         boolean exists = memberService.isUserIdExists(userId);
         return Collections.singletonMap("exists", exists);
+    }
+    
+    // 내 정보
+    @GetMapping("/info/{userId}")
+    public String viewMyInfo(@PathVariable String userId, Model model, HttpSession session) {
+        MemberVO sessionUser = (MemberVO) session.getAttribute("userInfo");
+
+        // 다른 사용자의 정보에 접근하지 못하도록
+        if (sessionUser == null || !sessionUser.getUserId().equals(userId)) {
+            return "redirect:/";
+        }
+
+        MemberVO member = memberService.findByUserId(userId);        
+        // 내 게시글 조회
+        List<BoardVO> myBoards = boardService.getBoardsByUserId(userId);
+        
+        model.addAttribute("member", member);
+        model.addAttribute("boards", myBoards);
+
+        return "member/info";
     }
 }

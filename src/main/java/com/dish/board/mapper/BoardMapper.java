@@ -16,4 +16,5 @@ public interface BoardMapper {
     void update(BoardVO board);
     void delete(Long boardNum);
     List<BoardVO> searchBoardsByTitle(@Param("boardType") String boardType, @Param("title") String title);
+    List<BoardVO> selectBoardsByUserId(String userId);
 }

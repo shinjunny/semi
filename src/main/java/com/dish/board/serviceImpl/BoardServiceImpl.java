@@ -49,4 +49,9 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardVO> searchBoardsByTitle(String boardType, String title) {
         return boardMapper.searchBoardsByTitle(boardType, title);
     }
+    
+    @Override
+    public List<BoardVO> getBoardsByUserId(String userId) {
+        return boardMapper.selectBoardsByUserId(userId);
+    }
 }

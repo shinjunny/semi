@@ -11,10 +11,20 @@
     <p th:text="${board.boardComment}"></p>
 
     <!-- 수정/삭제/목록 URL 모두 boardType 포함 -->
-    <a th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum})}">수정</a>
-    <a th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum})}"
-       onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+	<!-- 수정 -->
+	<a th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}">수정</a>
+
+	<!-- 삭제 -->
+	<a th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
+	   onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
     <br/>
-    <a th:href="@{/board/type/{boardType}(boardType=${boardType})}">목록으로</a>
+	<!-- 뒤로가기 (내 정보에서 진입한 경우만) -->
+	<div th:if="${infoView}">
+	    <button onclick="history.back()">뒤로가기</button>
+	</div>
+	<!-- 목록으로 (기본 진입일 경우만) -->
+	<div th:unless="${infoView}">
+	    <a th:href="@{/board/type/{boardType}(boardType=${boardType})}">목록으로</a>
+	</div>
 </body>
 </html>
