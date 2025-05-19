@@ -15,3 +15,4 @@ public interface MemberService {
 	// 내 정보
 	MemberVO findByUserId(String userId);
 }
+

@@ -21,6 +21,8 @@ import com.dish.board.service.MemberService;
 import com.dish.board.vo.BoardVO;
 import com.dish.board.vo.MemberVO;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +33,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final BoardService boardService;
-
+ss
     public MemberController(MemberService memberService, BoardService boardService) {
     	this.memberService = memberService;
     	this.boardService = boardService;
