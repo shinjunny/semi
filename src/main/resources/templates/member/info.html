@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보</title>
+</head>
+<body>
+    <h1>내 정보</h1>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>아이디</th>
+            <td th:text="${member.userId}"></td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td th:text="${member.userName}"></td>
+        </tr>
+        <tr>
+            <th>전화번호</th>
+            <td th:text="${member.userPhone1 + '-' + member.userPhone2 + '-' + member.userPhone3}"></td>
+        </tr>
+        <tr>
+            <th>주소1</th>
+            <td th:text="${member.userAddr1}"></td>
+        </tr>
+		<tr>
+            <th>주소2</th>
+            <td th:text="${member.userAddr2}"></td>
+        </tr>
+        <tr>
+            <th>회사</th>
+            <td th:text="${member.userCompany}"></td>
+        </tr>
+    </table>
+	
+	<!-- 내가 작성한 게시글 -->
+    <h2 th:if="${boards != null and !boards.isEmpty()}">내가 작성한 게시글</h2>
+
+    <!-- 게시글이 있는 경우에만 테이블 출력 -->
+    <table border="1" th:if="${boards != null and !boards.isEmpty()}">
+        <thead>
+            <tr>
+                <th>번호</th>
+				<th>게시판 유형</th>
+                <th>제목</th>
+                <th>작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="board : ${boards}">
+                <td th:text="${board.boardNum}"></td>	
+				<td th:switch="${board.boardType}">
+                    <span th:case="1">동네 맛집</span>
+                    <span th:case="2">지역 먹거리 축제</span>
+                    <span th:case="3">오늘의 레시피</span>
+                    <span th:case="4">푸드 커뮤니티</span>
+                    <span th:case="5">점심 메뉴 추천</span>
+                    <span th:case="*">알 수 없음</span>
+                </td>						
+                <td>
+					<a th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum}, fromInfo=true)}"
+					   th:text="${board.boardTitle}"></a>
+                </td>
+                <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <a href="/">홈으로</a>
+	<form th:action="@{/member/delete}" method="post" onsubmit="return confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다!');">
+	    <button type="submit">회원 탈퇴</button>
+	</form>
+</body>
+</html>
