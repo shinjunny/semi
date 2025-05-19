@@ -47,4 +47,23 @@
         AND board_title LIKE '%' || #{title} || '%'
     </select>
     
+    <select id="selectBoardsByUserId" parameterType="String" resultType="com.dish.board.vo.BoardVO">
+        SELECT 
+		    B.BOARD_TYPE,
+		    B.BOARD_NUM,
+		    B.BOARD_TITLE,
+		    B.BOARD_COMMENT,
+		    B.CREATOR,
+		    B.CREATE_TIME
+		FROM 
+		    BOARD B
+		JOIN 
+		    USER_INFO M ON B.CREATOR = M.USER_ID
+		WHERE 
+		    M.USER_ID = #{userId}
+		ORDER BY 
+		    B.CREATE_TIME DESC
+
+    </select>
+    
 </mapper>

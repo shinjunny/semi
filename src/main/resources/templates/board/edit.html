@@ -6,7 +6,7 @@
 <body>
     <h1>글 수정</h1>
     <!-- boardType을 포함한 수정 요청 -->
-    <form th:action="@{/board/type/{boardType}/edit(boardType=${boardType})}" method="post">
+    <form th:action="@{/board/type/{boardType}/edit(boardType=${boardType}, fromInfo=${fromInfo})}" method="post">
         <input type="hidden" name="boardNum" th:value="${board.boardNum}" />
         <input type="hidden" name="boardType" th:value="${board.boardType}" /> <!-- 값을 유지 -->
 

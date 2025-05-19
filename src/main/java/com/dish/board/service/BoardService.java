@@ -11,4 +11,5 @@ public interface BoardService {
     void updateBoard(BoardVO board);
     void deleteBoard(Long boardNum);
     List<BoardVO> searchBoardsByTitle(String boardType, String title);
+    List<BoardVO> getBoardsByUserId(String userId);
 }

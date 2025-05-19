@@ -14,4 +14,7 @@ public interface MemberMapper {
 	
 	// 아이디와 비밀번호로 회원 조회
 	MemberVO selectByIdAndPassword(MemberVO member);
+	
+	// 내 정보
+	MemberVO findByUserId(String userId);
 }
