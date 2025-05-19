@@ -136,4 +136,7 @@ src/test/
 
 temp/
 
-logs/
+logs/.project
+.classpath
+.settings/
+target/
