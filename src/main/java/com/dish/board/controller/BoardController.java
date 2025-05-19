@@ -139,6 +139,7 @@ public class BoardController {
         return "redirect:/board/type/" + boardType;
     }
 }
+// 2025-05-19
 // 기존: 게시글 수정 후에는 게시판으로 리다이렉트 됨.
 // 수정: 수정 후 info 페이지로 돌아갈 수 있도록 fromInfo 파라미터 추가. 
 // fromInfo가 true일 경우, 수정된 게시글을 작성한 유저의 info 페이지로 리다이렉트됩니다.

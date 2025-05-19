@@ -33,7 +33,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final BoardService boardService;
-ss
+
     public MemberController(MemberService memberService, BoardService boardService) {
     	this.memberService = memberService;
     	this.boardService = boardService;
