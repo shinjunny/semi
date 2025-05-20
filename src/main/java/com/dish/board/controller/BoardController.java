@@ -157,5 +157,5 @@ public class BoardController {
 // fromInfo가 true일 경우, 수정된 게시글을 작성한 유저의 info 페이지로 리다이렉트됩니다.
 
 // 기존: 게시글 삭제 후에는 게시판으로 리다이렉트 됨.
-// 수정: 삭제 후 info 페이지로 돌아갈 수 있도록 fromInfo 파라미터 추가. 
+// 수정: 삭제 후 info 페이지로 돌아갈 수 있도록 fromInfo 파라미터 추가.
 // fromInfo가 true일 경우, 삭제된 게시글을 작성한 유저의 info 페이지로 리다이렉트됩니다.
