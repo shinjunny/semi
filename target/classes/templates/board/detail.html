@@ -9,7 +9,9 @@
     <p><b>작성일:</b> <span th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></span></p>
     <p><b>내용:</b></p>
     <p th:text="${board.boardComment}"></p>
-
+	
+	<!-- 수정/삭제 버튼은 작성자일 때만 보이게 -->
+	<div th:if="${loginUserId} == ${board.creator}">
     <!-- 수정/삭제/목록 URL 모두 boardType 포함 -->
 	<!-- 수정 -->
 	<a th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}">수정</a>
@@ -18,6 +20,7 @@
 	<a th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
 	   onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
     <br/>
+	</div>
 	<!-- 뒤로가기 (내 정보에서 진입한 경우만) -->
 	<div th:if="${infoView}">
 	    <button onclick="history.back()">뒤로가기</button>
