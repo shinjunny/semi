@@ -48,11 +48,23 @@ public class BoardController {
     public String detail(@PathVariable String boardType,
     					 @PathVariable Long boardNum, 
     					 @RequestParam(value = "fromInfo", required = false) boolean fromInfo,
+    					 HttpServletRequest request,
     					 Model model) {
     	BoardVO board = boardService.getBoard(boardNum);
+    	 
+    	// 로그인 사용자 정보 가져오기
+    	HttpSession session = request.getSession();
+    	MemberVO loginUser = (MemberVO) session.getAttribute("userInfo");
+    	
     	model.addAttribute("boardType", boardType);
     	model.addAttribute("board", board);
     	model.addAttribute("infoView", fromInfo);
+    	
+    	// 로그인한 유저의 ID를 모델에 추가
+        if (loginUser != null) {
+            model.addAttribute("loginUserId", loginUser.getUserId());
+        }
+    	
         return "board/detail";
     }
 
