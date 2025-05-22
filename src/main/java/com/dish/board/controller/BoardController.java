@@ -8,9 +8,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 import com.dish.board.service.BoardService;
+import com.dish.board.service.MemberService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -20,9 +23,11 @@ import java.util.List;
 public class BoardController {
 	
 	private final BoardService boardService;
+	private final MemberService memberService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, MemberService memberService) {
         this.boardService = boardService;
+        this.memberService = memberService;
     }
 
     // 게시글 목록
@@ -51,7 +56,7 @@ public class BoardController {
     					 HttpServletRequest request,
     					 Model model) {
     	BoardVO board = boardService.getBoard(boardNum);
-    	 
+    	
     	// 로그인 사용자 정보 가져오기
     	HttpSession session = request.getSession();
     	MemberVO loginUser = (MemberVO) session.getAttribute("userInfo");
@@ -130,8 +135,7 @@ public class BoardController {
 
         return "redirect:/board/type/" + boardType + "/" + board.getBoardNum();
     }
-
-
+    
     // 삭제
     @GetMapping("/type/{boardType}/delete/{boardNum}")
     public String delete(@PathVariable String boardType,
@@ -151,11 +155,3 @@ public class BoardController {
         return "redirect:/board/type/" + boardType;
     }
 }
-// 2025-05-19
-// 기존: 게시글 수정 후에는 게시판으로 리다이렉트 됨.
-// 수정: 수정 후 info 페이지로 돌아갈 수 있도록 fromInfo 파라미터 추가. 
-// fromInfo가 true일 경우, 수정된 게시글을 작성한 유저의 info 페이지로 리다이렉트됩니다.
-
-// 기존: 게시글 삭제 후에는 게시판으로 리다이렉트 됨.
-// 수정: 삭제 후 info 페이지로 돌아갈 수 있도록 fromInfo 파라미터 추가.
-// fromInfo가 true일 경우, 삭제된 게시글을 작성한 유저의 info 페이지로 리다이렉트됩니다.

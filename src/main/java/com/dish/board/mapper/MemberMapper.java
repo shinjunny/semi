@@ -17,4 +17,7 @@ public interface MemberMapper {
 	
 	// 내 정보
 	MemberVO findByUserId(String userId);
+	
+	// 회원삭제
+	void DeleteMember(String userId);
 }

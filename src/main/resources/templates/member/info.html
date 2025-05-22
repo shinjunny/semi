@@ -68,5 +68,10 @@
     </table>
     <br/>
     <a href="/">홈으로</a>
+	
+	<!-- 회원탈퇴 -->
+	<form th:action="@{/member/delete}" method="post" onsubmit="return confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다!');">
+       <button type="submit">회원 탈퇴</button>
+   </form>
 </body>
 </html>

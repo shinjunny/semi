@@ -47,6 +47,7 @@
         FROM USER_INFO
         WHERE USER_ID = #{userId}
         AND USER_PW = #{userPw}
+        AND DELETED_USER = 'N'
     </select>
     
     <!-- 내 정보 -->
@@ -67,4 +68,10 @@
             USER_ID = #{userId}
     </select>
     
+    <update id="DeleteMember" parameterType="String">
+    	UPDATE USER_INFO
+    	SET DELETED_USER = 'Y'
+    	WHERE user_id = #{userId}
+	</update>
+   
 </mapper>
