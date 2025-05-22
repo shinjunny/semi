@@ -128,7 +128,6 @@
 		  background-color: #888;
 		}
 
-		/* 환영 메시지 */
 		p {
 		  text-align: center;
 		  font-size: 18px;
@@ -144,19 +143,23 @@
 	       </a>
 	     </div>
 		 <!-- 로그인 / 회원가입 (비로그인 상태만 보임) -->
-	     <div th:if="${session.userInfo == null}">
-	         <a href="/member/login">로그인</a><br/>
+	     <div th:if="${session.userInfo == null}" style="display: flex; gap: 10px; align-items: center;">
+	         <a href="/member/login">로그인</a>
 	         <a href="/member/signup">회원가입</a>
 	     </div>
-
+		 
 	     <!-- 로그아웃 (로그인 상태만 보임) -->
 	     <div th:if="${session.userInfo != null}">
-	 		<!-- 내 정보 링크 추가 -->
-	 		<a th:href="@{'/member/info/' + ${session.userInfo.userId}}">내 정보</a><br/>
-	 		
-	         <form th:action="@{/member/logout}" method="post">
-	             <button type="submit">로그아웃</button>
-	         </form>
+			<!-- 내 정보 링크 추가 -->
+			<div style="display: flex; gap: 10px; align-items: center;">
+				<strong th:text="${session.userInfo.userId + '님 반갑습니다 &#128073;'}" style="color: green;"></strong>
+		 		<a th:href="@{'/member/info/' + ${session.userInfo.userId}}">내 정보</a>
+				<a href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">로그아웃</a>
+			    <form id="logoutForm" th:action="@{/member/logout}" method="post" style="display: none;">
+					<!-- 이 버튼은 숨김 -->
+					<button type="submit">로그아웃</button>
+			    </form>
+			</div>
 	     </div>
 	   </header>
 	   <h1>
@@ -165,7 +168,7 @@
     <!-- 게시판 유형 선택 -->
 	<div class="serch-box">
 	    <select id="boardSelect">
-	        <option value="01" hidden>유형을 선택하세요.</option>
+	        <option value="" hidden>유형을 선택하세요</option>
 	        <option value="01">동네 맛집</option>
 	        <option value="02">지역 먹거리 축제</option>
 	        <option value="03">오늘의 레시피</option>
@@ -186,13 +189,6 @@
 	    <a href="/board/type/04" class="category">푸드 커뮤니티</a>
 	    <a href="/board/type/05" class="category">점심 메뉴 추천</a>
 	</div>
-
-    <br/>
-
-	<!-- 로그인 환영 메시지 -->
-    <div th:if="${session.userInfo != null}">
-        <p th:text="${session.userInfo.userId + '님 환영합니다!'}" style="color: green; font-weight: bold;"></p>
-    </div>
 
     <script>
         function searchPost() {

@@ -20,4 +20,6 @@ public interface MemberMapper {
 	
 	// 회원삭제
 	void DeleteMember(String userId);
+	
+	void updateMember(MemberVO member);
 }

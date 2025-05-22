@@ -3,130 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-	<style>
-		body {
-		  margin: 0;
-		  background-color: #ffffff;
-		  font-family: "Segoe UI", sans-serif;
-		}
-		  
-		header {
-		  position: absolute;
-		  top: 0;
-		  left: 0;
-		  display: flex;
-		  align-items: center;
-		  padding: 1rem;
-		}
+    <style>
+        /* 전체 스타일 */
+        * {
+            box-sizing: border-box; /* 모든 요소의 크기 계산에 padding과 border를 포함시킴 */
+        }
 
-		header img {
-		  height: 150px;
-		  cursor: pointer;
-		  border: #ddd;
-		}
+        body {
+            margin: 0;
+            background-color: #ffffff;
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-		.container {
-		  display: flex;
-		  flex-direction: column;
-		  align-items: center;
-		  justify-content: center;
-		  height: 100vh;
-		}
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
 
-		.login-box {
-		  width: 380px; /* 기존 320px보다 약간 크게 */
-		  padding: 3rem 2rem; /* 내부 공간을 넉넉하게 */
-		  border-radius: 20px;
-		  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-		  text-align: center;
-		}
+        header img {
+            height: 150px;
+            cursor: pointer;
+            border: #ddd;
+        }
 
-		.login-box h2 {
-		  color: #ff7f50;
-		  margin-bottom: 1rem;
-		}
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 0 20px;
+        }
 
-		input {
-		  width: 100%;
-		  padding: 12px;
-		  margin: 0.5rem 0;
-		  border: 1px solid #ddd;
-		  border-radius: 8px;
-		  font-size: 1rem;
-		}
+        .login-box {
+            width: 100%;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            background-color: #fff;
+        }
 
-		button {
-		  width: 105%;
-		  padding: 12px;
-		  margin-top: 1rem;
-		  background-color: #ff7f50;
-		  color: white;
-		  font-size: 1rem;
-		  font-weight: bold;
-		  border: none;
-		  border-radius: 8px;
-		  cursor: pointer;
-		}
+        .login-box h2 {
+            color: #ff7f50;
+            margin-bottom: 1rem;
+        }
 
-		.small-text {
-		  font-size: 0.9rem;
-		  color: #888;
-		  margin-top: 1rem;
-		}
+        /* input과 button의 스타일 */
+        input, button {
+            width: 100%; /* 너비를 100%로 설정 */
+            padding: 12px;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
 
-		a {
-		  color: #ff7f50;
-		  text-decoration: none;
-		  font-weight: bold;
-		}
-	</style>
+        button {
+            background-color: #ff7f50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* 기타 텍스트 스타일 */
+        .small-text {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 1rem;
+        }
+
+        a {
+            color: #ff7f50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-	<header>
-     <div class="header img">
-       <a><img src="/static/img/dish.png" alt="로고" /></a>
-	 </div>
-	</header>
-	<div class="container">
-		<div class="login-box">
-			<h2>DISH, 우리동네 맛집 속으로</h2>
-		    <form th:action="@{/member/login}" method="post">
-				<input type="text" name="userId" required placeholder="아이디" />
-				<input type="password" name="userPw" required placeholder="비밀번호" />
-		        <button type="submit">로그인</button><br/>
-		
-				<div class="small-text">
-		        	<p><a href="#">비밀번호를 잊으셨나요?</a></p>
-		        	<p>계정이 없으신가요? <a href="/member/signup">회원가입</a></p>
-		       	</div>
-		    </form>
-			
-			<div id="welcomeMessage" th:if="${welcomeMessage}" style="color: green; font-weight: bold;">
-				<p th:text="${welcomeMessage}"></p>
-			</div>
-			
-			<div id="error" th:if="${error}" style="color: red; font-weight: bold;">
-				<p th:text="${error}"></p>
-			</div>
-		</div>
-	</div>	
-	<script>
-	    // 3초 뒤에 메시지를 숨김
-	    setTimeout(function() {
-	        const messageDiv = document.getElementById("welcomeMessage");
-			const errorMessageDiv = document.getElementById("error");
-			
-	        if (messageDiv) {
-	            messageDiv.style.display = "none";
-	        }
-	    }, 3000);
-		
-		setTimeout(function() {
-			const errorMessageDiv = document.getElementById("error");
-	        if (errorMessageDiv) {
-	            errorMessageDiv.style.display = "none";
-	        }
-	    }, 3000);
-	</script>	
+    <header>
+        <div class="header img">
+            <a href="/"><img src="/static/img/dish.png" alt="로고" /></a>
+        </div>
+    </header>
+    <div class="container">
+        <div class="login-box">
+            <h2>DISH, 우리동네 맛집 속으로</h2>
+            <form th:action="@{/member/login}" method="post">
+                <input type="text" name="userId" required placeholder="아이디" />
+                <input type="password" name="userPw" required placeholder="비밀번호" />
+                <button type="submit">로그인</button><br/>
+
+                <div class="small-text">
+                    <p><a href="#">비밀번호를 잊으셨나요?</a></p>
+                    <p>계정이 없으신가요? <a href="/member/signup">회원가입</a></p>
+                </div>
+            </form>
+
+            <div id="welcomeMessage" th:if="${welcomeMessage}" style="color: green; font-weight: bold;">
+                <p th:text="${welcomeMessage}"></p>
+            </div>
+
+            <div id="error" th:if="${error}" style="color: red; font-weight: bold;">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 3초 뒤에 메시지를 숨김
+        setTimeout(function() {
+            const messageDiv = document.getElementById("welcomeMessage");
+            const errorMessageDiv = document.getElementById("error");
+
+            if (messageDiv) {
+                messageDiv.style.display = "none";
+            }
+        }, 3000);
+        
+        setTimeout(function() {
+            const errorMessageDiv = document.getElementById("error");
+            if (errorMessageDiv) {
+                errorMessageDiv.style.display = "none";
+            }
+        }, 3000);
+    </script>    
 </body>
 </html>

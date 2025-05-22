@@ -17,4 +17,6 @@ public interface MemberService {
 	
 	// 회원삭제
 	void deleteMember(String userId);
+	
+	void updateMember(MemberVO member);
 }
