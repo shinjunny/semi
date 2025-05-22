@@ -21,8 +21,6 @@ import com.dish.board.service.MemberService;
 import com.dish.board.vo.BoardVO;
 import com.dish.board.vo.MemberVO;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -114,5 +112,26 @@ public class MemberController {
         model.addAttribute("boards", myBoards);
 
         return "member/info";
+    }
+    
+    @PostMapping("/delete")
+    public String deleteMember(HttpSession session, RedirectAttributes redirectAttributes) {
+       MemberVO sessionUser = (MemberVO) session.getAttribute("userInfo");
+       if (sessionUser == null) {
+          return "redirect:/member/login";
+       }
+
+       String userId = sessionUser.getUserId();
+
+       try {
+          memberService.deleteMember(userId);
+          session.invalidate(); // 세션 종료 (로그아웃 처리)
+          redirectAttributes.addFlashAttribute("message", "회원 탈퇴가 완료되었습니다.");
+       } catch (Exception e) {
+          redirectAttributes.addFlashAttribute("error", "탈퇴 처리 중 오류가 발생했습니다.");
+          return "redirect:/member/info/" + userId;
+       }
+
+       return "redirect:/";
     }
 }

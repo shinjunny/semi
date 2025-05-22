@@ -136,7 +136,14 @@ src/test/
 
 temp/
 
-logs/.project
-.classpath
-.settings/
-target/
+logs/
+target/classes/static/css/home.css
+target/classes/templates/board/detail.html
+target/classes/templates/board/edit.html
+target/classes/templates/board/list.html
+target/classes/templates/board/write.html
+target/classes/templates/error/403.html
+target/classes/templates/home.html
+target/classes/templates/member/info.html
+target/classes/templates/member/mypage.html
+target/classes/templates/member/signup.html

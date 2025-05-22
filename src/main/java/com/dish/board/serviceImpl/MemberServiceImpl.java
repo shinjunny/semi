@@ -35,4 +35,10 @@ public class MemberServiceImpl implements MemberService {
     public MemberVO findByUserId(String userId) {
         return memberMapper.findByUserId(userId);
     }
+	
+	// 회원삭제
+	@Override
+	public void deleteMember(String userId) {
+		memberMapper.DeleteMember(userId);
+	}
 }

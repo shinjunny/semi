@@ -1,64 +1,54 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>디쉬</title>
-	<link rel="stylesheet" href="/static/css/home.css" />
+    <title>게시판 홈</title>
 </head>
 <body>
-	<header>
-	     <div class="header img">
-	       <a>
-	         <img src="/static/img/dish.png" alt="로고" />
-	       </a>
-	     </div>
-		 <!-- 로그인 / 회원가입 (비로그인 상태만 보임) -->
-	     <div th:if="${session.userInfo == null}">
-	         <a href="/member/login">로그인</a><br/>
-	         <a href="/member/signup">회원가입</a>
-	     </div>
+    <h1>홈</h1>
 
-	     <!-- 로그아웃 (로그인 상태만 보임) -->
-	     <div th:if="${session.userInfo != null}">
-	 		<!-- 내 정보 링크 추가 -->
-	 		<a th:href="@{'/member/info/' + ${session.userInfo.userId}}">내 정보</a><br/>
-	 		
-	         <form th:action="@{/member/logout}" method="post">
-	             <button type="submit">로그아웃</button>
-	         </form>
-	     </div>
-	   </header>
-	   <h1>
-	   	 동네 <span id="food-name" class="fade-text">돈까스</span>맛집 찾고 계신가요?
-	   </h1>
     <!-- 게시판 유형 선택 -->
-	<div class="serch-box">
-	    <select id="boardSelect">
-	        <option value="01" hidden>유형을 선택하세요.</option>
-	        <option value="01">동네 맛집</option>
-	        <option value="02">지역 먹거리 축제</option>
-	        <option value="03">오늘의 레시피</option>
-	        <option value="04">푸드 커뮤니티</option>
-	        <option value="05">점심 메뉴 추천</option>
-	    </select>
-	
-	    <!-- 제목 검색 -->
-	    <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
-	    <button onclick="searchPost()">검색</button>
-	</div>
+    <select id="boardSelect">
+        <option value="01" hidden>유형을 선택하세요.</option>
+        <option value="01">동네 맛집</option>
+        <option value="02">지역 먹거리 축제</option>
+        <option value="03">오늘의 레시피</option>
+        <option value="04">푸드 커뮤니티</option>
+        <option value="05">점심 메뉴 추천</option>
+    </select>
+
+    <!-- 제목 검색 -->
+    <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
+    <button onclick="searchPost()">검색</button>
+    <br/>
 
     <!-- 게시판 링크 -->
-	<div class="category-container">
-	    <a href="/board/type/01" class="category">동네 맛집</a>
-	    <a href="/board/type/02" class="category">지역 먹거리 축제</a>
-	    <a href="/board/type/03" class="category">오늘의 레시피</a>
-	    <a href="/board/type/04" class="category">푸드 커뮤니티</a>
-	    <a href="/board/type/05" class="category">점심 메뉴 추천</a>
-	</div>
+    <div class="board-links">
+        <a href="/board/type/01">동네 맛집</a><br/>
+        <a href="/board/type/02">지역 먹거리 축제</a><br/>
+        <a href="/board/type/03">오늘의 레시피</a><br/>
+        <a href="/board/type/04">푸드 커뮤니티</a><br/>
+        <a href="/board/type/05">점심 메뉴 추천</a><br/>
+    </div>
 
     <br/>
 
+    <!-- 로그인 / 회원가입 (비로그인 상태만 보임) -->
+    <div th:if="${session.userInfo == null}">
+        <a href="/member/login">로그인</a><br/>
+        <a href="/member/signup">회원가입</a>
+    </div>
+
+    <!-- 로그아웃 (로그인 상태만 보임) -->
+    <div th:if="${session.userInfo != null}">
+		<!-- 내 정보 링크 추가 -->
+		<a th:href="@{'/member/info/' + ${session.userInfo.userId}}">내 정보</a><br/>
+		
+        <form th:action="@{/member/logout}" method="post">
+            <button type="submit">로그아웃</button>
+        </form>
+    </div>
+	
 	<!-- 로그인 환영 메시지 -->
     <div th:if="${session.userInfo != null}">
         <p th:text="${session.userInfo.userId + '님 환영합니다!'}" style="color: green; font-weight: bold;"></p>
@@ -75,40 +65,6 @@
                 alert('게시판 유형과 제목을 입력해주세요.');
             }
         }
-		const foodNames = [
-	        "돈까스",
-	        "피자",
-	        "파스타",
-	        "짜장면",
-	        "제육볶음",
-	        "백반",
-	        "냉면",
-	        "김밥",
-	        "탕수육",
-	        "숯불갈비",
-	        "포케",
-	        "샐러드",
-	      ];
-
-	      let index = 0;
-	      const foodElement = document.getElementById("food-name");
-
-	      function changeFood() {
-	        foodElement.classList.add("fade-out");
-
-	        setTimeout(() => {
-	          index = (index + 1) % foodNames.length;
-	          foodElement.innerText = foodNames[index];
-	          foodElement.classList.remove("fade-out");
-	          foodElement.classList.add("fade-in");
-
-	          setTimeout(() => {
-	            foodElement.classList.remove("fade-in");
-	          }, 500);
-	        }, 500);
-	      }
-			
-      	setInterval(changeFood, 2000);
     </script>
 </body>
 </html>
