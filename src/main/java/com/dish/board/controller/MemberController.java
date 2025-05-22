@@ -134,4 +134,46 @@ public class MemberController {
 
        return "redirect:/";
     }
+    
+    @GetMapping("/info/{userId}/edit")
+    public String editFormFromInfo(@PathVariable String userId, HttpSession session, Model model) {
+        MemberVO sessionUser = (MemberVO) session.getAttribute("userInfo");
+
+        if (sessionUser == null || !sessionUser.getUserId().equals(userId)) {
+            return "redirect:/";
+        }
+
+        MemberVO member = memberService.findByUserId(userId);
+        model.addAttribute("member", member);
+
+        return "member/editInfo";
+    }
+    
+    @PostMapping("/info/{userId}/edit")
+    public String updateMemberInfo(@PathVariable String userId,
+                                    @ModelAttribute MemberVO updatedMember,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        MemberVO sessionUser = (MemberVO) session.getAttribute("userInfo");
+
+        if (sessionUser == null || !sessionUser.getUserId().equals(userId)) {
+            return "redirect:/";
+        }
+
+        try {
+            updatedMember.setUserId(userId);
+            updatedMember.setModifier(userId);
+
+            memberService.updateMember(updatedMember);
+
+            // 세션 정보도 업데이트
+            session.setAttribute("userInfo", updatedMember);
+
+            redirectAttributes.addFlashAttribute("message", "정보가 성공적으로 수정되었습니다.");
+            return "redirect:/member/info/" + userId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "정보 수정 중 오류가 발생했습니다.");
+            return "redirect:/member/info/" + userId + "/edit";
+        }
+    }
 }

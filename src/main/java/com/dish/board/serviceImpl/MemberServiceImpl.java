@@ -41,4 +41,9 @@ public class MemberServiceImpl implements MemberService {
 	public void deleteMember(String userId) {
 		memberMapper.DeleteMember(userId);
 	}
+	
+	@Override
+    public void updateMember(MemberVO member) {
+        memberMapper.updateMember(member);
+    }
 }

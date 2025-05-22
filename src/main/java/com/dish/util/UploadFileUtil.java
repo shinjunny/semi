@@ -2,6 +2,7 @@ package com.dish.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.UUID;
@@ -52,10 +53,29 @@ public class UploadFileUtil {
 			FileCopyUtils.copy(file.getBytes(), target);
 			
 			// 리턴 남았다.
+			// /2025/05/21/asffsafsafsa.ext
+			String result = makeFilePath(uploadPath, savePath, saveFileName);
+			return result;
 		} else {
 			throw new BadRequestException("파일을 업로드 할 수 없습니다.");
 		}
-		return "";
+	}
+	
+	/**
+	 * 파일 경로 문자열 생성
+	 * @param uploadPath
+	 * @param path
+	 * @param fileName
+	 * @return
+	 */
+	public static String makeFilePath(
+			String uploadPath, 
+			String path, 
+			String fileName) {
+		
+		// C:\\WAS_DATA\\upload \2025/05/21/파일명
+		String filePath = uploadPath + path + File.separator + fileName;
+		return filePath.substring(uploadPath.length()).replace(File.separatorChar, '/');
 	}
 	
 	/**
@@ -114,6 +134,23 @@ public class UploadFileUtil {
 			return fileName.substring(dotPostion + 1);
 		} else {
 			return "";
+		}
+	}
+	
+	/**
+	 * 파일 MIME
+	 * MIME (Multipurpose Internet Mail Extension)
+	 * 타입/서브타입 image/jpg, image/png, image/gif
+	 * @param filePath
+	 * @return
+	 */
+	public static String getFileMimeType(String filePath) {
+		File file = new File(filePath);
+		try {
+			return Files.probeContentType(file.toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

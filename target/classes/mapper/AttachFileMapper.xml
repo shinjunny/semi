@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dish.board.mapper.AttachFileMapper">
+
+	<!-- 첨부 파일 저장 -->
+    <insert id="insertFileDetail" 
+    	parameterType="com.dish.board.vo.AttachFileDetailVO"
+    	useGeneratedKeys="true" keyColumn="FILE_ID" keyProperty="fileId"
+    	>
+    	INSERT INTO ATTACH_FILE_DETAIL (
+			FILE_MASTER_ID, FILE_PATH, FILE_NAME,
+			ORG_FILE_NAME, FILE_EXT, FILE_MIME,
+			FILE_SIZE, CREATOR, MODIFIER
+		) VALUES (
+			#{fileMasterId}, #{filePath}, #{fileName},
+			#{orgFileName}, #{fileExt}, #{fileMime},
+			#{fileSize}, #{creator}, #{modifier}
+		)
+    </insert>
+    
+    <!-- fileName으로 데이터 찾기 -->
+    <select id="findByFileName" 
+    	resultType="com.dish.board.vo.AttachFileDetailVO"
+    	parameterType="String"
+    	>
+    	SELECT * FROM ATTACH_FILE_DETAIL WHERE FILE_NAME = #{fileName}
+    </select>
+    
+</mapper>
