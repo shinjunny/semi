@@ -195,7 +195,7 @@
                 <a th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum})}"
                    th:text="${board.boardTitle}"></a>
             </td>
-            <td data-label="작성자" th:text="${board.creator}"></td>
+            <td data-label="작성자" th:text="${board.writer}"></td>
             <td data-label="작성일" th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         </tbody>

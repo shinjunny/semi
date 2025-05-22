@@ -1,21 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.dish.board.mapper.BoardMapper">
 
+    <!-- ResultMap: writer 포함 -->
+    <resultMap id="BoardResultMap" type="com.dish.board.vo.BoardVO">
+        <result property="boardType" column="BOARD_TYPE"/>
+        <result property="boardNum" column="BOARD_NUM"/>
+        <result property="boardTitle" column="BOARD_TITLE"/>
+        <result property="boardComment" column="BOARD_COMMENT"/>
+        <result property="creator" column="CREATOR"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifiedTime" column="MODIFIED_TIME"/>
+        <result property="writer" column="writer"/> 
+    </resultMap>
+
+    <!-- 전체 게시글 조회 (writer 없음) -->
     <select id="findAll" resultType="com.dish.board.vo.BoardVO">
         SELECT * FROM BOARD ORDER BY BOARD_NUM DESC
     </select>
-    
-    <select id="selectBoardsByType" resultType="com.dish.board.vo.BoardVO">
-        SELECT * FROM board
-        WHERE board_type = #{boardType}
-        ORDER BY BOARD_NUM DESC
+
+    <!-- board_type으로 필터링 + writer 포함된 resultMap 사용 -->
+    <select id="selectBoardsByType" resultMap="BoardResultMap" parameterType="string">
+        SELECT 
+            B.BOARD_TYPE,
+            B.BOARD_NUM,
+            B.BOARD_TITLE,
+            B.BOARD_COMMENT,
+            B.CREATOR,
+            B.CREATE_TIME,
+            B.MODIFIER,
+            B.MODIFIED_TIME,
+            CASE WHEN U.DELETED_USER = 'Y' THEN '탈퇴한 회원' ELSE U.USER_ID END AS writer
+        FROM BOARD B
+        LEFT JOIN USER_INFO U ON B.CREATOR = U.USER_ID
+        WHERE B.BOARD_TYPE = #{boardType}
+        ORDER BY B.BOARD_NUM DESC
     </select>
 
-    <select id="findById" parameterType="long" resultType="com.dish.board.vo.BoardVO">
-        SELECT * FROM BOARD WHERE BOARD_NUM = #{boardNum}
-    </select>
+    <!-- 게시글 번호로 조회 -->
+    <select id="findById" parameterType="long" resultMap="BoardResultMap">
+	    SELECT 
+	        B.BOARD_TYPE,
+	        B.BOARD_NUM,
+	        B.BOARD_TITLE,
+	        B.BOARD_COMMENT,
+	        B.CREATOR,
+	        B.CREATE_TIME,
+	        B.MODIFIER,
+	        B.MODIFIED_TIME,
+	        CASE WHEN U.DELETED_USER = 'Y' THEN '탈퇴한 회원' ELSE U.USER_ID END AS writer
+	    FROM BOARD B
+	    LEFT JOIN USER_INFO U ON B.CREATOR = U.USER_ID
+	    WHERE B.BOARD_NUM = #{boardNum}
+	</select>
 
+    <!-- 게시글 등록 -->
     <insert id="insert" parameterType="com.dish.board.vo.BoardVO">
         INSERT INTO BOARD (
             BOARD_TYPE, BOARD_TITLE, BOARD_COMMENT,
@@ -26,6 +67,7 @@
         )
     </insert>
 
+    <!-- 게시글 수정 -->
     <update id="update" parameterType="com.dish.board.vo.BoardVO">
         UPDATE BOARD
         SET
@@ -37,33 +79,35 @@
         WHERE BOARD_NUM = #{boardNum}
     </update>
 
+    <!-- 게시글 삭제 -->
     <delete id="delete" parameterType="long">
         DELETE FROM BOARD WHERE BOARD_NUM = #{boardNum}
     </delete>
-    
-    <select id="searchBoardsByTitle" resultType="BoardVO">
-        SELECT * FROM board
-        WHERE board_type = #{boardType}
-        AND board_title LIKE '%' || #{title} || '%'
+
+    <!-- 제목으로 검색 -->
+    <select id="searchBoardsByTitle" resultType="com.dish.board.vo.BoardVO">
+        SELECT * FROM BOARD
+        WHERE BOARD_TYPE = #{boardType}
+          AND BOARD_TITLE LIKE '%' || #{title} || '%'
     </select>
-    
+
+    <!-- 유저 아이디로 게시글 조회 -->
     <select id="selectBoardsByUserId" parameterType="String" resultType="com.dish.board.vo.BoardVO">
         SELECT 
-		    B.BOARD_TYPE,
-		    B.BOARD_NUM,
-		    B.BOARD_TITLE,
-		    B.BOARD_COMMENT,
-		    B.CREATOR,
-		    B.CREATE_TIME
-		FROM 
-		    BOARD B
-		JOIN 
-		    USER_INFO M ON B.CREATOR = M.USER_ID
-		WHERE 
-		    M.USER_ID = #{userId}
-		ORDER BY 
-		    B.CREATE_TIME DESC
-
+            B.BOARD_TYPE,
+            B.BOARD_NUM,
+            B.BOARD_TITLE,
+            B.BOARD_COMMENT,
+            B.CREATOR,
+            B.CREATE_TIME
+        FROM 
+            BOARD B
+        JOIN 
+            USER_INFO M ON B.CREATOR = M.USER_ID
+        WHERE 
+            M.USER_ID = #{userId}
+        ORDER BY 
+            B.CREATE_TIME DESC
     </select>
-    
+
 </mapper>

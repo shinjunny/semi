@@ -22,4 +22,5 @@ public class BoardVO {
     private LocalDateTime createTime;
     private String modifier;
     private LocalDateTime modifiedTime;
+    private String writer;
 }

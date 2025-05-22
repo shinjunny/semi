@@ -44,7 +44,7 @@ public class BoardController {
         List<BoardVO> boards = boardService.getBoardsByType(boardType);
         model.addAttribute("boards", boards);
         model.addAttribute("boardType", boardType);
-        // log.info(boards.toString());       
+        // log.info(boards.toString());   
         return "board/list";
     }
 
