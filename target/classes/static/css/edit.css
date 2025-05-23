@@ -1,0 +1,129 @@
+/* 기본 스타일 */
+ body {
+     font-family: "Segoe UI", sans-serif;
+     background-color: #f4f5f7;
+     margin: 0;
+     padding: 0;
+     color: #333;
+ }
+
+ .container {
+     max-width: 960px;
+     margin: 60px auto;
+     padding: 30px;
+     background: #ffffff;
+     border-radius: 16px;
+     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+ }
+
+ h1 {
+     font-size: 26px;
+     text-align: center;
+     color: #ff7f50;
+     margin-bottom: 20px;
+     border-bottom: 2px solid #ff7f50;
+     padding-bottom: 10px;
+ }
+
+ /* 폼 레이아웃 */
+ form {
+     display: flex;
+     flex-direction: column;
+     gap: 15px;
+ }
+
+ label {
+     font-weight: bold;
+     color: #333;
+     font-size: 16px;
+ }
+
+ input[type="text"],
+ textarea {
+     padding: 12px;
+     font-size: 16px;
+     border: 1px solid #ddd;
+     border-radius: 8px;
+     width: 100%;
+     box-sizing: border-box;
+     background-color: #f9f9f9;
+ }
+
+ textarea {
+     resize: vertical;
+ }
+
+ /* 버튼 스타일 */
+ button,
+ a.button {
+     background-color: #ff7f50;
+     color: white;
+     padding: 12px 20px;
+     border: none;
+     border-radius: 8px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+     display: inline-block;
+     text-align: center;
+     text-decoration: none;
+     width: 48%;
+ }
+
+ button:hover,
+ a.button:hover {
+     background-color: #ff9268;
+ }
+
+ .button-group {
+     display: flex;
+     justify-content: center;
+     gap: 20px;
+     margin-top: 20px;
+ }
+
+ /* 반응형 */
+ @media (max-width: 600px) {
+     .container {
+         padding: 20px;
+         margin: 20px auto;
+     }
+
+     h1 {
+         font-size: 22px;
+     }
+
+     input[type="text"],
+     textarea {
+         font-size: 14px;
+     }
+
+     button,
+     a.button {
+         padding: 10px 15px;
+         width: 100%;
+     }
+
+     .button-group {
+         flex-direction: column;
+         gap: 20px;
+     }
+ }
+
+.back-btn {
+    background-color: #999;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    width: 48%;
+}
+
+.back-btn:hover {
+    background-color: #777;
+}
