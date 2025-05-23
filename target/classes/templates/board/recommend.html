@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>점심 메뉴 추천</title>
+    <link rel="stylesheet" href="/static/css/home.css" />
+    <style>
+        .recommend-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+            margin: 30px auto;
+            text-align: center;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header img">
+        <a>
+            <img src="/static/img/dish.png" alt="로고" />
+        </a>
+    </div>
+</header>
+<h1 style="text-align:center">오늘 뭐 먹지? 🍽️</h1>
+<div class="recommend-box">
+    <select id="mealType" onchange="updateNextSelect('mealType')">
+        <option value="" hidden>식사 종류 선택</option>
+        <option value="meal">식사</option>
+        <option value="cook">요리</option>
+        <option value="snack">간식</option>
+    </select>
+
+    <select id="foodStyle" onchange="updateNextSelect('foodStyle')" disabled>
+        <option value="" hidden>음식 종류 선택</option>
+        <option value="korean">한식</option>
+        <option value="chinese">중식</option>
+        <option value="japanese">일식</option>
+        <option value="western">양식</option>
+        <option value="asian">아시아</option>
+    </select>
+
+    <select id="situation" disabled>
+        <option value="" hidden>상황 선택</option>
+        <option value="alone">혼밥</option>
+        <option value="friend">친구</option>
+        <option value="date">연인</option>
+        <option value="family">가족</option>
+        <option value="group">모임</option>
+    </select>
+
+    <button onclick="recommendMenu()">메뉴 추천!</button>
+    <div id="recommendationResult" style="margin-top: 20px; font-weight: bold;"></div>
+</div>
+
+<script>
+    const menuMap = {
+        "meal_korean_alone": ["김치찌개", "된장찌개", "제육덮밥"],
+        "meal_japanese_friend": ["규동", "가츠동", "라멘"],
+        "snack_asian_group": ["나시고렝", "팟타이", "반미"],
+        "cook_western_date": ["스테이크", "라자냐", "치킨 커틀릿"],
+        "meal_chinese_family": ["마라탕", "양장피", "팔보채"]
+        // 필요한 조합을 계속 추가해 주세요
+    };
+
+    function updateNextSelect(changed) {
+        if (changed === 'mealType') {
+            document.getElementById('foodStyle').disabled = false;
+            document.getElementById('situation').disabled = true;
+        }
+        if (changed === 'foodStyle') {
+            document.getElementById('situation').disabled = false;
+        }
+    }
+
+    function recommendMenu() {
+        const type = document.getElementById('mealType').value;
+        const style = document.getElementById('foodStyle').value;
+        const situation = document.getElementById('situation').value;
+
+        if (!type || !style || !situation) {
+            alert("모든 카테고리를 선택해주세요!");
+            return;
+        }
+
+        const key = `${type}_${style}_${situation}`;
+        const menus = menuMap[key];
+
+        if (!menus || menus.length === 0) {
+            document.getElementById('recommendationResult').innerText = "추천할 메뉴가 없어요 😢";
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * menus.length);
+        const result = menus[randomIndex];
+        document.getElementById('recommendationResult').innerText = `오늘의 추천 메뉴는: 🍽️ ${result}!`;
+    }
+</script>
+</body>
+</html>

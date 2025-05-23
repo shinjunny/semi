@@ -41,6 +41,12 @@ public class BoardController {
     // 게시판 유형별 목록
     @GetMapping("/type/{boardType}")
     public String listByType(@PathVariable String boardType, Model model) {
+        if ("05".equals(boardType)) {
+            List<BoardVO> lunchMenus = boardService.getBoardsByType(boardType);
+            model.addAttribute("recommendations", lunchMenus);
+            return "board/recommend"; // → recommend.html
+        }
+    	
         List<BoardVO> boards = boardService.getBoardsByType(boardType);
         model.addAttribute("boards", boards);
         model.addAttribute("boardType", boardType);
