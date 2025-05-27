@@ -39,7 +39,7 @@ public class AttachFileService {
 		this.rootLocation = Paths.get(uploadPath);
 		this.attachFileMapper = attachFileMapper;
 	}
-}
+
 	public List<AttachFileDetailVO> save(
 			List<MultipartFile> files, 
 			HttpServletRequest request) throws IOException {
