@@ -73,7 +73,6 @@ public class BoardController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("totalCount", totalCount);
-
         return "board/list";
     }
 
@@ -84,6 +83,7 @@ public class BoardController {
     					 @RequestParam(value = "fromInfo", required = false) boolean fromInfo,
     					 HttpServletRequest request,
     					 Model model) {
+    	
     	BoardVO board = boardService.getBoard(boardNum);
     	
     	// 로그인 사용자 정보 가져오기
@@ -92,7 +92,7 @@ public class BoardController {
     	
     	// 댓글 목록 조회 2025-05-23 10:30
         List<CommentVO> comments = commentService.getComments(boardNum);
-    	
+        
         log.info(fromInfo ? "1111" : "222222");
     	model.addAttribute("boardType", boardType);
     	model.addAttribute("board", board);
@@ -103,7 +103,7 @@ public class BoardController {
         if (loginUser != null) {
             model.addAttribute("loginUserId", loginUser.getUserId());
         }
-    	
+        
         return "board/detail";
     }
     
