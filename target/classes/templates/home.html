@@ -1,240 +1,228 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>게시판 홈</title>
-	<style>
-		* {
-		  box-sizing: border-box;
-		}
-		body {
-		  margin: 0;
-		  font-family: "SEGOE UI", sans-serif;
-		  background-color: #fff;
-		  color: #222;
-		}
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "SEGOE UI", sans-serif;
+        background-color: #fff;
+        color: #222;
+      }
 
-		header {
-		  display: flex;
-		  justify-content: space-between;
-		  align-items: center;
-		  padding: 20px 40px;
-		}
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+      }
 
-		header img {
-		  height: 150px;
-		  cursor: pointer;
-		  border: #ddd;
-		}
+      header img {
+        height: 150px;
+        cursor: pointer;
+        border: #ddd;
+      }
 
-		/* 제목 */
-		h1 {
-		  text-align: center;
-		  margin-top: 50px;
-		  font-size: 42px;
-		  color: #333;
-		}
+      /* 제목 */
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 42px;
+        color: #333;
+      }
 
-		.fade-text {
-		  display: inline-block;
-		  opacity: 1;
-		  transform: translateY(0);
-		  transition: opacity 0.5s ease, transform 0.5s ease;
-		}
-		.fade-out {
-		  opacity: 0;
-		  transform: translateY(-10px);
-		}
-		.fade-in {
-		  opacity: 1;
-		  transform: translateY(0px);
-		}
+      .fade-text {
+        display: inline-block;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+      .fade-out {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      .fade-in {
+        opacity: 1;
+        transform: translateY(0px);
+      }
 
-		/* 검색 박스 스타일 */
-		.serch-box {
-		  display: flex;
-		  justify-content: center;
-		  align-items: center;
-		  gap: 8px;
-		  margin: 30px 0;
-		}
-		.serch-box select,
-		.serch-box input {
-		  padding: 12px;
-		  font-size: 16px;
-		  border: 1px solid #ccc;
-		  border-radius: 6px;
-		}
-		.serch-box button {
-		  background-color: #ff6f0f;
-		  color: #fff;
-		  border: none;
-		  padding: 12px 20px;
-		  font-size: 16px;
-		  border-radius: 6px;
-		  cursor: pointer;
-		}
-		.serch-box button:hover {
-		  background-color: #e65c00;
-		}
+      /* 검색 박스 스타일 */
+      .serch-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 30px 0;
+      }
+      .serch-box select,
+      .serch-box input {
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      .serch-box button {
+        background-color: #ff6f0f;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .serch-box button:hover {
+        background-color: #e65c00;
+      }
 
-		/* 카테고리 버튼들 */
-		.category-container {
-		  display: flex;
-		  flex-wrap: wrap;
-		  justify-content: center;
-		  gap: 16px;
-		  margin-bottom: 40px;
-		}
-		.category {
-		  text-decoration: none;
-		  width: 150px;
-		  height: 100px;
-		  background-color: #f7f7f7;
-		  border-radius: 12px;
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		  font-weight: bold;
-		  font-size: 17px;
-		  color: #444;
-		  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-		  cursor: pointer;
-		  transition: background-color 0.2s;
-		}
-		.category:hover {
-		  background-color: #ffe8d9;
-		}
+      /* 카테고리 버튼들 */
+      .category-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 40px;
+      }
+      .category {
+        text-decoration: none;
+        width: 150px;
+        height: 100px;
+        background-color: #f7f7f7;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 17px;
+        color: #444;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .category:hover {
+        background-color: #ffe8d9;
+      }
 
-		/* 로그인 / 회원가입 / 로그아웃 영역 */
-		a {
-		  color: #ff6f0f;
-		  text-decoration: none;
-		  font-weight: bold;
-		}
-		a:hover {
-		  text-decoration: underline;
-		}
-		form button {
-		  margin-top: 10px;
-		  background-color: #aaa;
-		  color: #fff;
-		  border: none;
-		  padding: 8px 14px;
-		  border-radius: 4px;
-		  cursor: pointer;
-		}
-		form button:hover {
-		  background-color: #888;
-		}
+      /* 로그인 / 회원가입 / 로그아웃 영역 */
+      a {
+        color: #ff6f0f;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      form button {
+        margin-top: 10px;
+        background-color: #aaa;
+        color: #fff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      form button:hover {
+        background-color: #888;
+      }
 
-		p {
-		  text-align: center;
-		  font-size: 18px;
-		  margin-top: 20px;
-		}
-	</style>
-</head>
-<body>
-	<header>
-	     <div class="header img">
-	       <a>
-	         <img src="/static/img/dish.png" alt="로고" />
-	       </a>
-	     </div>
-		 <!-- 로그인 / 회원가입 (비로그인 상태만 보임) -->
-	     <div th:if="${session.userInfo == null}" style="display: flex; gap: 10px; align-items: center;">
-	         <a href="/member/login">로그인</a>
-	         <a href="/member/signup">회원가입</a>
-	     </div>
-		 
-	     <!-- 로그아웃 (로그인 상태만 보임) -->
-	     <div th:if="${session.userInfo != null}">
-			<!-- 내 정보 링크 추가 -->
-			<div style="display: flex; gap: 10px; align-items: center;">
-				<strong th:text="${session.userInfo.userId + '님 반갑습니다 &#128073;'}" style="color: green;"></strong>
-		 		<a th:href="@{'/member/info/' + ${session.userInfo.userId}}">내 정보</a>
-				<a href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">로그아웃</a>
-			    <form id="logoutForm" th:action="@{/member/logout}" method="post" style="display: none;">
-					<!-- 이 버튼은 숨김 -->
-					<button type="submit">로그아웃</button>
-			    </form>
-			</div>
-	     </div>
-	   </header>
-	   <h1>
-	   	 동네 <span id="food-name" class="fade-text">돈까스</span>맛집 찾고 계신가요?
-	   </h1>
+      p {
+        text-align: center;
+        font-size: 18px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header img">
+        <a>
+          <img src="/static/img/dish.png" alt="로고" />
+        </a>
+      </div>
+      <!-- 로그인 / 회원가입 (비로그인 상태만 보임) -->
+      <div
+        th:if="${session.userInfo == null}"
+        style="display: flex; gap: 10px; align-items: center"
+      >
+        <a href="/member/login">로그인</a>
+        <a href="/member/signup">회원가입</a>
+      </div>
+
+      <!-- 로그아웃 (로그인 상태만 보임) -->
+      <div th:if="${session.userInfo != null}">
+        <!-- 내 정보 링크 추가 -->
+        <div style="display: flex; gap: 10px; align-items: center">
+          <strong
+            th:text="${session.userInfo.userId + '님 반갑습니다 &#128073;'}"
+            style="color: green"
+          ></strong>
+          <a th:href="@{'/member/info/' + ${session.userInfo.userId}}"
+            >내 정보</a
+          >
+          <a
+            href="#"
+            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"
+            >로그아웃</a
+          >
+          <form
+            id="logoutForm"
+            th:action="@{/member/logout}"
+            method="post"
+            style="display: none"
+          >
+            <!-- 이 버튼은 숨김 -->
+            <button type="submit">로그아웃</button>
+          </form>
+        </div>
+      </div>
+    </header>
+    <h1>
+      동네 <span id="food-name" class="fade-text">돈까스</span>맛집 찾고
+      계신가요?
+    </h1>
     <!-- 게시판 유형 선택 -->
-	<div class="serch-box">
-	    <select id="boardSelect">
-	        <option value="" hidden>유형을 선택하세요</option>
-	        <option value="01">동네 맛집</option>
-	        <option value="02">지역 먹거리 축제</option>
-	        <option value="03">오늘의 레시피</option>
-	        <option value="04">푸드 커뮤니티</option>
-	        <option value="05">점심 메뉴 추천</option>
-	    </select>
-	
-	    <!-- 제목 검색 -->
-	    <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
-	    <button onclick="searchPost()">검색</button>
-	</div>
+    <div class="serch-box">
+      <select id="boardSelect">
+        <option value="" hidden>유형을 선택하세요</option>
+        <option value="01">동네 맛집</option>
+        <option value="02">지역 먹거리 축제</option>
+        <option value="03">오늘의 레시피</option>
+        <option value="04">푸드 커뮤니티</option>
+        <option value="05">점심 메뉴 추천</option>
+      </select>
+
+      <!-- 제목 검색 -->
+      <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
+      <button onclick="searchPost()">검색</button>
+    </div>
 
     <!-- 게시판 링크 -->
-	<div class="category-container">
-	    <a href="/board/type/01" class="category">동네 맛집</a>
-	    <a href="/board/type/02" class="category">지역 먹거리 축제</a>
-	    <a href="/board/type/03" class="category">오늘의 레시피</a>
-	    <a href="/board/type/04" class="category">푸드 커뮤니티</a>
-	    <a href="/board/type/05" class="category">점심 메뉴 추천</a>
-	</div>
+    <div class="board-links">
+      <a href="/board/type/01">동네 맛집</a><br />
+      <a href="/board/type/02">지역 먹거리 축제</a><br />
+      <a href="/board/type/03">오늘의 레시피</a><br />
+      <a href="/board/type/04">푸드 커뮤니티</a><br />
+      <a href="/board/type/05">점심 메뉴 추천</a><br />
+    </div>
 
     <script>
-        function searchPost() {
-            var boardType = document.getElementById("boardSelect").value;
-            var title = document.getElementById("titleInput").value;
+      function searchPost() {
+        var boardType = document.getElementById("boardSelect").value;
+        var title = document.getElementById("titleInput").value;
 
-            if (boardType && title) {
-                window.location.href = '/search?boardType=' + boardType + '&title=' + encodeURIComponent(title);
-            } else {
-                alert('게시판 유형과 제목을 입력해주세요.');
-            }
+        if (boardType && title) {
+          window.location.href =
+            "/search?boardType=" +
+            boardType +
+            "&title=" +
+            encodeURIComponent(title);
+        } else {
+          alert("게시판 유형과 제목을 입력해주세요.");
         }
-		const foodNames = [
-	        "돈까스",
-	        "피자",
-	        "파스타",
-	        "짜장면",
-	        "제육볶음",
-	        "백반",
-	        "냉면",
-	        "김밥",
-	        "탕수육",
-	        "숯불갈비",
-	        "포케",
-	        "샐러드",
-	      ];
-
-	      let index = 0;
-	      const foodElement = document.getElementById("food-name");
-
-	      function changeFood() {
-	        foodElement.classList.add("fade-out");
-
-	        setTimeout(() => {
-	          index = (index + 1) % foodNames.length;
-	          foodElement.innerText = foodNames[index];
-	          foodElement.classList.remove("fade-out");
-	          foodElement.classList.add("fade-in");
-
-	          setTimeout(() => {
-	            foodElement.classList.remove("fade-in");
-	          }, 500);
-	        }, 500);
-	      }
-			
-      	setInterval(changeFood, 2000);
+      }
     </script>
-</body>
+  </body>
 </html>
