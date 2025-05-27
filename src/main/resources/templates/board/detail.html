@@ -71,6 +71,17 @@
         button.back-btn:hover {
             background-color: #777;
         }
+
+        .file-preview {
+            margin-bottom: 10px;
+        }
+
+        .file-preview img {
+            max-width: 300px;
+            display: block;
+            margin-top: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -83,40 +94,61 @@
         <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></span></p>
     </div>
 
-    <div class="content" th:utext="${board.boardComment}">
-        게시글 내용이 여기에 표시됩니다.
+    <!-- 첨부파일 영역 -->
+    <div>
+        <h4>첨부파일</h4>
+        <ul>
+            <th:block th:if="${fileList != null}">
+                <li th:each="file : ${fileList}" class="file-preview">
+                    <!-- 이미지인 경우 미리보기 -->
+					 <div th:if="${#strings.contains(file.fileMime, 'image')}">
+					        <!-- file.filePath 이 "/2025/05/27/uuid.png" 형태라 가정하고, 앞의 "/"만 제거 -->
+					        <img
+					            th:src="@{'/api/file/view/fileName/' + ${file.fileName}}" 
+					            alt="첨부 이미지 미리보기"
+					        />
+					    </div>
+                    <!-- 파일 다운로드 링크 -->
+					<a 
+					        th:href="@{'/upload/' + ${file.filePath.substring(1)}}" 
+					        th:text="${file.orgFileName}" 
+					        download
+					    ></a>
+                </li>
+            </th:block>
+        </ul>
     </div>
 
-	<div class="button-group">
-	    <!-- 수정/삭제 버튼 (작성자만 보이게) -->
-	    <a class="button"
-	       th:if="${loginUserId} == ${board.creator}"
-	       th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}">
-	        수정
-	    </a>
+    <div class="button-group">
+        <!-- 수정/삭제 버튼 (작성자만 보이게) -->
+        <a class="button"
+           th:if="${loginUserId} == ${board.creator}"
+           th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}">
+            수정
+        </a>
 
-	    <a class="button"
-	       th:if="${loginUserId} == ${board.creator}"
-	       th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
-	       onclick="return confirm('정말 삭제하시겠습니까?')">
-	        삭제
-	    </a>
+        <a class="button"
+           th:if="${loginUserId} == ${board.creator}"
+           th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
+           onclick="return confirm('정말 삭제하시겠습니까?')">
+            삭제
+        </a>
 
-	    <!-- 뒤로가기 버튼 (내 정보 진입 시) -->
-	    <button class="back-btn"
-	            type="button"
-	            th:if="${infoView}"
-	            onclick="history.back()">
-	        뒤로가기
-	    </button>
+        <!-- 뒤로가기 버튼 (내 정보 진입 시) -->
+        <button class="back-btn"
+                type="button"
+                th:if="${infoView}"
+                onclick="history.back()">
+            뒤로가기
+        </button>
 
-	    <!-- 목록으로 버튼 (기본 진입 시) -->
-	    <a class="button"
-	       th:unless="${infoView}"
-	       th:href="@{/board/type/{boardType}(boardType=${boardType})}">
-	        목록으로
-	    </a>
-	</div>
+        <!-- 목록으로 버튼 (기본 진입 시) -->
+        <a class="button"
+           th:unless="${infoView}"
+           th:href="@{/board/type/{boardType}(boardType=${boardType})}">
+            목록으로
+        </a>
+    </div>
 </div>
 </body>
 </html>

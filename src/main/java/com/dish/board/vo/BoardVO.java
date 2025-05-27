@@ -23,4 +23,7 @@ public class BoardVO {
     private String modifier;
     private LocalDateTime modifiedTime;
     private String writer;
+    
+    // 🔽 첨부파일용
+    private Long fileMasterId;
 }

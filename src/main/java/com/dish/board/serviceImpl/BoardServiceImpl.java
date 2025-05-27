@@ -6,6 +6,9 @@ import com.dish.board.mapper.BoardMapper;
 import com.dish.board.service.BoardService;
 import com.dish.board.vo.BoardVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class BoardServiceImpl implements BoardService {
 	
@@ -32,6 +35,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void createBoard(BoardVO board) {
+    	log.info(board.toString());
         boardMapper.insert(board);
     }
 

@@ -32,12 +32,18 @@ public class AttachFileController {
 	@Autowired
 	private AttachFileService attachFileService;
 	
+	@GetMapping("/getMasterId")
+	public ResponseEntity<?> getMasterId(HttpServletRequest request) {
+		return ResponseEntity.ok(attachFileService.getMasterId(request));
+	}
+	
 	@PostMapping("/save")
 	public ResponseEntity<?> save(
 			@RequestParam("files") List<MultipartFile> files,
-			HttpServletRequest request
+			HttpServletRequest request,
+			@RequestParam("masterId") Long masterId
 		) throws IOException {
-		return ResponseEntity.ok(attachFileService.save(files, request));
+		return ResponseEntity.ok(attachFileService.save(files, request, masterId));
 	}
 	
 	// api/file/view/fileName/파일명

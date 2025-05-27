@@ -131,6 +131,7 @@
     <form th:action="@{/board/type/{boardType}/write(boardType=${boardType})}" method="post">
         <input type="hidden" name="boardType" th:value="${board.boardType}" />
 
+		<input type="hidden" name="fileMasterId" id="fileMasterId" value="" />
         <label for="boardTitle">제목:</label>
         <input type="text" id="boardTitle" name="boardTitle" required /><br/>
 
@@ -157,6 +158,12 @@
 	    </div>
     </form>
 	<script>
+		let masterId = 0;
+		fetch('/api/file/getMasterId').then(res => res.json()).then(data => {
+			console.log(data)
+			masterId = data.fileId;
+			document.querySelector('#fileMasterId').value = data.fileId;
+		})
 		document.querySelector('#file')
 			.addEventListener('change', function(e){
 				console.log(e.target.files)
@@ -164,6 +171,7 @@
 				for (let i = 0; i < e.target.files.length; i++) {
 					formData.append('files', e.target.files[i]);
 				}
+				formData.append('masterId', masterId);
 				fetch('/api/file/save', {
 					method: 'post',
 					body: formData
@@ -178,6 +186,21 @@
 							image.classList.add('resultImage');
 							image.src = `/api/file/view/fileName/${item.fileName}`
 							li.append(image);
+							/**
+												* 삭제 버튼 처리 : 버튼을 클릭했을때 인라인 형태로 데이터를 넣어서 클릭 이벤트 시 삭제 할 자료로 활용 한다.
+												*/
+												const btn = document.createElement('button');
+												btn.classList.add('btnDelete');
+												btn.textContent = '삭제';
+												btn.dataset.fileId = item.fileId;
+												btn.dataset.fileName = item.fileName;
+												btn.dataset.fileMasterId = item.fileMasterId;
+												li.append(btn);
+												/**
+												* li 태그는 삭제 로직이 처리될때 li 태그를 찾는 용도로 활용 한다.
+												*/
+												li.dataset.fileId = item.fileId;
+												li.dataset.fileMasterId = item.fileMasterId;
 							ul.append(li);
 						})
 					}

@@ -112,13 +112,14 @@ public class UploadFileUtil {
 	 * @param paths
 	 */
 	public static void makeDir(String uploadPath, String... paths) {
-		// 파라미터로 받은 폴더가 있으면 연산 종료
-		if (new File(paths[paths.length - 1]).exists()) return;
-		// 폴더가 없으면 생성한다.
-		for (String path : paths) {
-			File dirPath = new File(uploadPath + path);
-			if (!dirPath.exists()) dirPath.mkdir();
-		}
+	    File dir = new File(uploadPath); // 시작 경로
+
+	    for (String path : paths) {
+	        dir = new File(dir, path); // 상대 경로로 누적
+	        if (!dir.exists()) {
+	            dir.mkdir();
+	        }
+	    }
 	}
 	
 	/**

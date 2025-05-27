@@ -50,22 +50,27 @@
 	        B.CREATE_TIME,
 	        B.MODIFIER,
 	        B.MODIFIED_TIME,
-	        CASE WHEN U.DELETED_USER = 'Y' THEN '탈퇴한 회원' ELSE U.USER_ID END AS writer
+	        CASE WHEN U.DELETED_USER = 'Y' THEN '탈퇴한 회원' ELSE U.USER_ID END AS writer,
+	        B.FILE_MASTER_ID
 	    FROM BOARD B
 	    LEFT JOIN USER_INFO U ON B.CREATOR = U.USER_ID
 	    WHERE B.BOARD_NUM = #{boardNum}
 	</select>
 
     <!-- 게시글 등록 -->
-    <insert id="insert" parameterType="com.dish.board.vo.BoardVO">
-        INSERT INTO BOARD (
-            BOARD_TYPE, BOARD_TITLE, BOARD_COMMENT,
-            CREATOR, CREATE_TIME, MODIFIER, MODIFIED_TIME
-        ) VALUES (
-            #{boardType}, #{boardTitle}, #{boardComment},
-            #{creator}, SYSDATE, #{modifier}, SYSDATE
-        )
-    </insert>
+   <insert id="insert" parameterType="BoardVO">
+    INSERT INTO BOARD (
+        BOARD_TYPE, BOARD_TITLE, BOARD_COMMENT,
+        CREATOR, CREATE_TIME, MODIFIER, MODIFIED_TIME, 
+        FILE_MASTER_ID
+    )
+    VALUES (
+        #{boardType}, #{boardTitle}, #{boardComment},
+        #{creator}, SYSDATE, #{creator}, SYSDATE, 
+        #{fileMasterId}
+    )
+</insert>
+
 
     <!-- 게시글 수정 -->
     <update id="update" parameterType="com.dish.board.vo.BoardVO">

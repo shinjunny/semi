@@ -1,5 +1,6 @@
 package com.dish.board.controller;
 
+import com.dish.board.vo.AttachFileDetailVO;
 import com.dish.board.vo.BoardVO;
 import com.dish.board.vo.MemberVO;
 
@@ -7,9 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
+import com.dish.board.service.AttachFileService;
 import com.dish.board.service.BoardService;
 import com.dish.board.service.MemberService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +27,11 @@ public class BoardController {
 	
 	private final BoardService boardService;
 	private final MemberService memberService;
+	private final AttachFileService attachFileService;
 
-    public BoardController(BoardService boardService, MemberService memberService) {
+	@Autowired
+    public BoardController(BoardService boardService, MemberService memberService, AttachFileService attachFileService) {
+		this.attachFileService = attachFileService;
         this.boardService = boardService;
         this.memberService = memberService;
     }
@@ -65,6 +71,18 @@ public class BoardController {
     	model.addAttribute("board", board);
     	model.addAttribute("infoView", fromInfo);
     	
+    	log.info(board.toString());
+    	
+    	// 2) 첨부파일 조회 (fileMasterId 를 게시글 VO 에서 가져온다고 가정)
+        Long masterId = board.getFileMasterId();
+        log.info(String.valueOf(masterId));
+        if (masterId != null) {
+            List<AttachFileDetailVO> fileList = 
+                attachFileService.findFilesByMasterId(masterId);
+            model.addAttribute("fileList", fileList);
+        }
+
+    	
     	// 로그인한 유저의 ID를 모델에 추가
         if (loginUser != null) {
             model.addAttribute("loginUserId", loginUser.getUserId());
@@ -88,14 +106,22 @@ public class BoardController {
     public String write(@PathVariable String boardType,
                         @ModelAttribute BoardVO board,
                         HttpServletRequest request) {
-    	
-    	HttpSession session = request.getSession();
-    	MemberVO member = (MemberVO) session.getAttribute("userInfo");
-    	
+
+        HttpSession session = request.getSession();
+        MemberVO member = (MemberVO) session.getAttribute("userInfo");
+
         board.setBoardType(boardType);
         board.setCreator(member.getUserId());
         board.setModifier(member.getUserId());
+
+        // 업로드된 파일이 있다면 fileMasterId 설정
+        Long fileMasterId = (Long) request.getAttribute("fileMasterId");  // 또는 파라미터에서 받아오기
+        if (fileMasterId != null) {
+            board.setFileMasterId(fileMasterId);
+        }
+
         boardService.createBoard(board);
+
         return "redirect:/board/type/" + boardType;
     }
 
