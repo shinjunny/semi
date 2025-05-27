@@ -143,9 +143,7 @@
 	    const key = `${type}_${category}_${situation}`;
 	    lastKey = key;
 
-	    let menuOptions = menuMap[key];  // 이거 먼저 선언해주고
-
-	    console.log("추천 메뉴 호출됨!", key, menuOptions);  // 요거 나중에!
+	    let menuOptions = menuMap[key];
 
 	    if (!menuOptions) {
 	        const allMenus = Object.values(menuMap).flat();
@@ -159,7 +157,15 @@
 	    setTimeout(() => {
 	        spinWheel();
 	    }, 100);
-		document.getElementById('wheelcanvas').style.display = 'block';  
+		document.getElementById('wheelcanvas').style.display = 'block';
+		
+		function reRecommendMenu() {
+		    if (!lastKey || !menuMap[lastKey]) {
+		        alert("먼저 추천 버튼을 눌러주세요!");
+		        return;
+		    }
+		    setupWheel(menuMap[lastKey]);
+		}  
 	}
 </script>
 </body>
