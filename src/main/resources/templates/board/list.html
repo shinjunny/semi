@@ -162,6 +162,35 @@
 		    color: #ff7f50;
 		    text-decoration: none;
 		}
+		
+		.pagination {
+		    text-align: center;      /* 가운데 정렬 */
+		    margin: 20px 0;          /* 위아래 여백 추가 */
+		    font-size: 15px;         /* 글자 크기 조정 (필요시) */
+		}
+
+		.pagination a {
+		    margin: 0 6px;           /* 페이지 번호 사이 간격 조절 */
+		    padding: 8px 14px;       /* 클릭 영역 넓히기 */
+		    border-radius: 6px;
+		    background-color: #eee;
+		    color: #333;
+		    text-decoration: none;
+		    font-weight: 500;
+		    transition: background-color 0.3s ease, color 0.3s ease;
+		}
+
+		.pagination a:hover {
+		    background-color: #ff7f50;
+		    color: white;
+		}
+
+		.pagination a.active {
+		    background-color: var(--primary-color);
+		    color: white;
+		    pointer-events: none;
+		    font-weight: 700;
+		}
     </style>
 </head>
 <body>
@@ -200,7 +229,20 @@
         </tr>
         </tbody>
     </table>
+	
+	<div class="pagination" th:if="${totalCount > pageSize}">
+	    <a th:if="${currentPage > 1}"
+	       th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${currentPage - 1}, size=${pageSize})}">이전</a>
 
+	    <a th:each="pageNum : ${#numbers.sequence(1, (totalCount + pageSize -1) / pageSize)}"
+	       th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${pageNum}, size=${pageSize})}"
+	       th:text="${pageNum}"
+	       th:classappend="${pageNum == currentPage} ? 'active' : ''"></a>
+
+	    <a th:if="${currentPage < (totalCount + pageSize -1) / pageSize}"
+	       th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${currentPage + 1}, size=${pageSize})}">다음</a>
+	</div>
+	
     <div class="button-group">
         <a class="button" th:href="@{/board/type/{boardType}/write(boardType=${boardType})}">글쓰기</a>
         <a class="button" th:href="@{/}">홈으로</a>

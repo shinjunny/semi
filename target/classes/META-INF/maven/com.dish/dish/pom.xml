@@ -110,6 +110,14 @@
 		    <artifactId>commons-fileupload</artifactId>
 		    <version>1.5</version>
 		</dependency>
+		
+		<!--비밀번호 찾기 신준 2025-05-22-->
+		<!--메일보내기-->
+		<dependency>
+		  <groupId>org.springframework.boot</groupId>
+		  <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>

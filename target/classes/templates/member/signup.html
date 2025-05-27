@@ -3,47 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f9f9f9;
+            font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+        }
+
+        h2 {
+            color: #ff7f50;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .signup-box {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff7f50;
+            outline: none;
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .phone-group select,
+        .phone-group input {
+            flex: 1;
+        }
+
+        .error-message {
+            color: #d9534f;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            margin-top: 2rem;
+            width: 100%;
+            background-color: #ff7f50;
+            color: white;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff6333;
+        }
+
+        @media (max-width: 500px) {
+            .phone-group {
+                flex-direction: column;
+            }
+        }
+		
+		.home-button {
+		    display: block;
+		    margin-top: 1rem;
+		    width: 100%;
+		    background-color: #ccc;
+		    color: #333;
+		    padding: 0.85rem;
+		    font-size: 1rem;
+		    font-weight: bold;
+		    border: none;
+		    border-radius: 8px;
+		    text-align: center;
+		    text-decoration: none;
+		    box-sizing: border-box;
+		    transition: background-color 0.3s;
+		}
+
+		.home-button:hover {
+		    background-color: #bbb;
+		}
+    </style>
 </head>
 <body>
-    <h2>회원가입</h2>
-    <form th:action="@{/member/signup}" th:object="${member}" method="post">
-        <label for="userId">아이디:</label>
-        <input type="text" th:field="*{userId}" required/><br/>
-		
-		<!-- error message -->
-		<div th:if="${error}" style="color:red;">
-		    <p th:text="${error}"></p>
-		</div>
+    <div class="container">
+        <h2>회원가입</h2>
+        <div class="signup-box">
+            <form th:action="@{/member/signup}" th:object="${member}" method="post">
+                <label for="userId">아이디</label>
+                <input type="text" th:field="*{userId}" required />
 
-        <label for="userPw">비밀번호:</label>
-        <input type="password" th:field="*{userPw}" required/><br/>
+                <div th:if="${error}" class="error-message">
+                    <p th:text="${error}"></p>
+                </div>
 
-        <label for="userName">이름:</label>
-        <input type="text" th:field="*{userName}" required/><br/>
+                <label for="userPw">비밀번호</label>
+                <input type="password" th:field="*{userPw}" required />
+				
+				<label for="userPwConfirm">비밀번호 확인</label>
+				<input type="password" id="userPwConfirm" name="userPwConfirm" required />
+				
+				<div id="pwMismatch" style="color: red; display: none;">
+				    비밀번호가 일치하지 않습니다.
+				</div>
 
-        <label>전화번호:</label>
-		<select th:field="*{userPhone1}">
-		    <option value="" hidden>선택</option>
-		    <option value="010">010</option>
-		    <option value="011">011</option>
-		    <option value="016">016</option>
-		    <option value="017">017</option>
-		    <option value="018">018</option>
-		    <option value="019">019</option>
-		</select> -
-        <input type="text" th:field="*{userPhone2}" size="4" maxlength="4"/> -
-        <input type="text" th:field="*{userPhone3}" size="4" maxlength="4"/><br/>
+                <label for="userName">이름</label>
+                <input type="text" th:field="*{userName}" required />
 
-        <label for="userAddr1">주소 1:</label>
-        <input type="text" th:field="*{userAddr1}"/><br/>
+                <label>전화번호</label>
+                <div class="phone-group">
+                    <select th:field="*{userPhone1}">
+                        <option value="" hidden>선택</option>
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                    </select>
+                    <input type="text" th:field="*{userPhone2}" maxlength="4" />
+                    <input type="text" th:field="*{userPhone3}" maxlength="4" />
+                </div>
 
-        <label for="userAddr2">주소 2:</label>
-        <input type="text" th:field="*{userAddr2}"/><br/>
+                <label for="userAddr1">주소 1</label>
+                <input type="text" th:field="*{userAddr1}" />
 
-        <label for="userCompany">회사명:</label>
-        <input type="text" th:field="*{userCompany}"/><br/>
+                <label for="userAddr2">주소 2</label>
+                <input type="text" th:field="*{userAddr2}" />
 
-        <button type="submit">회원가입</button>
-    </form>
+                <label for="Email">이메일</label>
+                <input type="text" th:field="*{Email}" />
+
+                <button type="submit">회원가입</button>
+				
+				<a href="/" class="home-button">홈으로</a>
+            </form>
+        </div>
+    </div>
+	<script>
+	    const form = document.querySelector("form");
+	    const pw = document.querySelector("[name='userPw']");
+	    const pwConfirm = document.querySelector("[name='userPwConfirm']");
+	    const pwMismatch = document.getElementById("pwMismatch");
+
+	    form.addEventListener("submit", function(e) {
+	        if (pw.value !== pwConfirm.value) {
+	            e.preventDefault(); // 제출 막기
+	            pwMismatch.style.display = "block";
+	        } else {
+	            pwMismatch.style.display = "none";
+	        }
+	    });
+	</script>
 </body>
 </html>

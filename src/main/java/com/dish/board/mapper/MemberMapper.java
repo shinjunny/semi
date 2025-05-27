@@ -1,6 +1,7 @@
 package com.dish.board.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.dish.board.vo.MemberVO;
 
@@ -22,4 +23,8 @@ public interface MemberMapper {
 	void DeleteMember(String userId);
 	
 	void updateMember(MemberVO member);
+	
+	// 비번변경
+	// 비밀번호 찾기 신준 2025-05-22
+	void updatePassword(@Param("userId") String userId, @Param("userPw") String userPw);
 }

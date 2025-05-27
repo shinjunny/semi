@@ -26,7 +26,7 @@
             , #{userPhone3}
             , #{userAddr1}
             , #{userAddr2}
-            , #{userCompany}
+            , #{Email}
             , #{userId}
             , SYSDATE
             , #{userId}
@@ -61,7 +61,7 @@
             , USER_PHONE3
             , USER_ADDR1
             , USER_ADDR2
-            , USER_COMPANY
+            , USER_COMPANY AS Email
         FROM 
             USER_INFO
         WHERE 
@@ -83,10 +83,18 @@
             USER_PHONE3 = #{userPhone3},
             USER_ADDR1 = #{userAddr1},
             USER_ADDR2 = #{userAddr2},
-            USER_COMPANY = #{userCompany},
+            USER_COMPANY = #{Email},
             MODIFIER = #{modifier},
             MODIFIED_TIME = SYSDATE
         WHERE USER_ID = #{userId}
+    </update>
+    
+    <!-- 비밀번호 찾기 신준 2025-05-22 -->
+	<!--비번 재설정-->	
+    <update id="updatePassword">
+        UPDATE USER_INFO
+        SET USER_PW = #{userPw}
+        WHERE user_id = #{userId}
     </update>
    
 </mapper>

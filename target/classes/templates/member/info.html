@@ -42,7 +42,6 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 10px;
-            margin-bottom: 40px;
         }
 
         th, td {
@@ -58,12 +57,12 @@
             background-color: var(--primary-color);
             color: white;
             font-weight: 600;
-			text-align: center;
+            text-align: center;
         }
 		
-		td {
-			text-align: center;
-		}
+        td {
+            text-align: center;
+        }
 
         td a {
             text-decoration: none;
@@ -117,6 +116,16 @@
             margin: 0;
         }
 
+        /* 내가 작성한 게시글 스크롤 박스 */
+        .board-list-wrapper {
+            max-height: 400px;  /* 최대 높이 설정 */
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding-right: 10px; /* 스크롤바 때문에 오른쪽 여백 */
+            margin-bottom: 40px; /* 테이블 아래 여백 */
+        }
+
         @media (max-width: 600px) {
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -157,14 +166,35 @@
                 width: 100%;
                 text-align: center;
             }
+
+            /* 모바일에서 스크롤 영역 크기 조정 */
+            .board-list-wrapper {
+                max-height: none; /* 모바일에선 스크롤 제한 해제 */
+                padding-right: 0;
+                border: none;
+                margin-bottom: 20px;
+            }
         }
 		
-		.info-table th {
-		    width: 30%;
+        .info-table th {
+            width: 30%;
+        }
+
+        .info-table td {
+            width: 70%;
+        }
+		
+		.board-list-wrapper {
+		    max-height: 400px;
+		    overflow-y: auto;
+		    border: 1px solid #ddd;
+		    border-radius: 12px;
+		    padding: 0 20px;
+		    margin-bottom: 40px;
 		}
 
-		.info-table td {
-		    width: 70%;
+		table th, table td {
+		    padding: 12px 10px;
 		}
     </style>
 </head>
@@ -194,45 +224,48 @@
             <td data-label="주소2" th:text="${member.userAddr2}"></td>
         </tr>
         <tr>
-            <th>회사</th>
-            <td data-label="회사" th:text="${member.userCompany}"></td>
+            <th>이메일</th>
+            <td data-label="이메일" th:text="${member.Email}"></td>
         </tr>
     </table>
 
     <h2 th:if="${boards != null and !boards.isEmpty()}">내가 작성한 게시글</h2>
 
-    <table th:if="${boards != null and !boards.isEmpty()}">
-        <thead>
-        <tr>
-            <th>번호</th>
-            <th>게시판 유형</th>
-            <th>제목</th>
-            <th>작성일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="board : ${boards}">
-            <td data-label="번호" th:text="${board.boardNum}"></td>
-            <td data-label="게시판 유형" th:switch="${board.boardType}">
-                <span th:case="1">동네 맛집</span>
-                <span th:case="2">지역 먹거리 축제</span>
-                <span th:case="3">오늘의 레시피</span>
-                <span th:case="4">푸드 커뮤니티</span>
-                <span th:case="5">점심 메뉴 추천</span>
-                <span th:case="*">알 수 없음</span>
-            </td>
-            <td data-label="제목">
-                <a th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum}, fromInfo=true)}"
-                   th:text="${board.boardTitle}"></a>
-            </td>
-            <td data-label="작성일" th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="board-list-wrapper" th:if="${boards != null and !boards.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>게시판 유형</th>
+                <th>제목</th>
+                <th>작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boards}">
+                <td data-label="번호" th:text="${board.boardNum}"></td>
+                <td data-label="게시판 유형" th:switch="${board.boardType}">
+                    <span th:case="1">동네 맛집</span>
+                    <span th:case="2">지역 먹거리 축제</span>
+                    <span th:case="3">오늘의 레시피</span>
+                    <span th:case="4">푸드 커뮤니티</span>
+                    <span th:case="5">점심 메뉴 추천</span>
+                    <span th:case="*">알 수 없음</span>
+                </td>
+                <td data-label="제목">
+                    <a th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum}, fromInfo=true)}"
+                       th:text="${board.boardTitle}"></a>
+                </td>
+                <td data-label="작성일" th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="button-group">
         <a class="button" href="/">홈으로</a>
-		<a class="button" th:href="@{/member/info/{userId}/edit(userId=${member.userId})}">정보 수정</a>
+        <a class="button" th:href="@{/member/info/{userId}/edit(userId=${member.userId})}">정보 수정</a>
+		<a class="button" th:href="@{/member/update-password(userId=${member.userId})}" target="_blank">비밀번호 재설정</a>
         <form th:action="@{/member/delete}" method="post"
               onsubmit="return confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다!');">
             <button type="submit">회원 탈퇴</button>
