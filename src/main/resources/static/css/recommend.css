@@ -9,8 +9,7 @@
 
 body {
   font-family: "Segoe UI", "Pretendard", sans-serif;
-  background: url('https://www.transparenttextures.com/patterns/symphony.png'),
-              linear-gradient(to bottom right, #f0f4f8, #dfe8f1);
+  background-color: var(--light-bg);
   margin: 0;
   padding: 0;
   color: var(--text-color);
@@ -130,3 +129,5 @@ button:hover {
     font-size: 16px;
   }
 }
+
+

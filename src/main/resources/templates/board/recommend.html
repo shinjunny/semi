@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>점심 메뉴 추천</title>
     <link rel="stylesheet" href="/static/css/recommend.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+	<script src="/static/js/Winwheel.min.js"></script>
 </head>
 
 <body>
@@ -40,13 +42,20 @@
         <option value="family">가족</option>
         <option value="group">모임</option>
     </select>
+	
+	<canvas id="wheelcanvas" width="500" height="500"></canvas>
+	<button onclick="spinWheel()">룰렛 돌리기!</button>
+	<div id="wheelResult" style="text-align: center; margin-top: 20px; font-size: 1.2em;"></div>
 
 	<div class="button-group" style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
 	  <button onclick="recommendMenu()">추천받기</button>
 	  <button onclick="reRecommendMenu()">다시 추천!</button>
 	</div>
-	<div id="recommendationResult" style="margin-top: 20px; text-align: center; font-size: 1.2em;"></div>
-
+	<div id="recommendationArea">
+	  <div id="rouletteWrapper">
+	    <div id="roulette"></div>
+	  </div>
+	</div>
 <script>
     const menuMap = {
 		// 🍚 meal (식사)
@@ -86,36 +95,71 @@
 	function getRandomItem(arr) {
 	    return arr[Math.floor(Math.random() * arr.length)];
 	}
+	
+	let theWheel;
+
+	function setupWheel(menuList) {
+	    theWheel = new Winwheel({
+			canvasId: "wheelcanvas",
+	        numSegments: menuList.length,
+	        outerRadius: 200,
+	        textFontSize: 16,
+	        segments: menuList.map(name => ({ fillStyle: getRandomColor(), text: name })),
+	        animation: {
+	            type: 'spinToStop',
+	            duration: 5,
+	            spins: 8,
+	            callbackFinished: function (indicatedSegment) {
+	                document.getElementById('wheelResult').innerHTML =
+	                    `오늘의 추천 메뉴는 <strong>${indicatedSegment.text}</strong>입니다! 🍽️`;
+	            }
+	        }
+	    });
+	}
+
+	function getRandomColor() {
+	    const colors = ['#FFB6C1', '#FFD700', '#98FB98', '#ADD8E6', '#FFA07A', '#DDA0DD'];
+	    return colors[Math.floor(Math.random() * colors.length)];
+	}
+
+	function spinWheel() {
+	    if (!theWheel) {
+	        alert("먼저 추천할 메뉴를 설정해주세요!");
+	        return;
+	    }
+	    theWheel.startAnimation();
+	}
 
 	function recommendMenu() {
 	    const type = document.getElementById("mealType").value;
-	    const category = document.getElementById("foodStyle").value; // 고침!
+	    const category = document.getElementById("foodStyle").value;
 	    const situation = document.getElementById("situation").value;
+
+	    if (!type || !category || !situation) {
+	        alert("모든 선택지를 선택해주세요!");
+	        return;
+	    }
 
 	    const key = `${type}_${category}_${situation}`;
 	    lastKey = key;
 
-	    let menuOptions = menuMap[key];
+	    let menuOptions = menuMap[key];  // 이거 먼저 선언해주고
+
+	    console.log("추천 메뉴 호출됨!", key, menuOptions);  // 요거 나중에!
 
 	    if (!menuOptions) {
 	        const allMenus = Object.values(menuMap).flat();
 	        const backup = getRandomItem(allMenus);
-	        document.getElementById("recommendationResult").innerText = `추천할 메뉴가 없어 대신 '${backup}'을 추천해요! 😋`;
+	        document.getElementById("wheelResult").innerHTML = `추천할 메뉴가 없어 대신 <strong>${backup}</strong>을 추천해요! 😋`;
 	        return;
 	    }
 
-	    const menu = getRandomItem(menuOptions);
-	    document.getElementById("recommendationResult").innerText = `오늘의 추천 메뉴는 '${menu}'입니다! 🍽️`;
-	}
+	    setupWheel(menuOptions);
 
-	function reRecommendMenu() {
-	    if (!lastKey || !menuMap[lastKey]) {
-	        document.getElementById("recommendationResult").innerText = "먼저 추천을 받아야 다시 추천할 수 있어요! 👀";
-	        return;
-	    }
-
-	    const menu = getRandomItem(menuMap[lastKey]);
-	    document.getElementById("recommendationResult").innerText = `다시 추천된 메뉴는 '${menu}'입니다! 🍽️`;
+	    setTimeout(() => {
+	        spinWheel();
+	    }, 100);
+		document.getElementById('wheelcanvas').style.display = 'block';  
 	}
 </script>
 </body>
