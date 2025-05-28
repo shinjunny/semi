@@ -28,7 +28,14 @@
     </select>
     
     <select id="findFilesByMasterId" parameterType="Long" resultType="AttachFileDetailVO">
-    	SELECT * FROM ATTACH_FILE_DETAIL WHERE FILE_ID = #{fileMasterId}
+    	SELECT * FROM ATTACH_FILE_DETAIL WHERE FILE_MASTER_ID = #{fileMasterId}
     </select>
+    
+    <delete id="deleteFile" parameterType="FileDeleteRequest">
+    	DELETE FROM ATTACH_FILE_DETAIL 
+	    	WHERE FILE_ID = #{fileId} 
+		    	AND FILE_MASTER_ID = #{fileMasterId} 
+		    	AND FILE_NAME = #{fileName}
+    </delete>
     
 </mapper>

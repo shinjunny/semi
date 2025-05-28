@@ -2,7 +2,9 @@ package com.dish.board.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dish.board.service.AttachFileService;
 import com.dish.board.vo.AttachFileDetailVO;
+import com.dish.board.vo.FileDeleteRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -72,4 +77,23 @@ public class AttachFileController {
 		Resource resource = attachFileService.loadAsResource(vo.getFilePath());
 		return ResponseEntity.ok().headers(headers).body(resource);
 	}
+	
+//	@PostMapping("/delete")
+//	public ResponseEntity<?> deleteFile(@RequestBody FileDeleteRequest fileDeleteRequest) {
+//		log.info(fileDeleteRequest.toString());
+//		attachFileService.deleteFile(fileDeleteRequest);
+//		return ResponseEntity.ok().build();
+//	}
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteFile(@RequestBody FileDeleteRequest fileDeleteRequest) {
+	    log.info(fileDeleteRequest.toString());
+	    attachFileService.deleteFile(fileDeleteRequest);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("status", "success");
+	    return ResponseEntity.ok(result);
+	}
+
+	// 수정
+	
 }

@@ -14,8 +14,8 @@
 
         .container {
             max-width: 960px;
-            margin: 60px auto;
-            padding: 30px;
+            margin: 30px auto;
+            padding: 200px;
             background: #ffffff;
             border-radius: 16px;
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
@@ -163,6 +163,24 @@
         </span><br/>
 
         <label for="boardComment">내용:</label>
+		<!-- 첨부파일 영역 -->
+			    <div>
+			        <h4>첨부파일</h4>
+			        <ul>
+			            <th:block th:if="${fileList != null}">
+			                <li th:each="file : ${fileList}" class="file-preview">
+			                    <!-- 이미지인 경우 미리보기 -->
+								 <div th:if="${#strings.contains(file.fileMime, 'image')}">
+								        <!-- file.filePath 이 "/2025/05/27/uuid.png" 형태라 가정하고, 앞의 "/"만 제거 -->
+								        <img
+								            th:src="@{'/api/file/view/fileName/' + ${file.fileName}}" 
+								            alt="첨부 이미지 미리보기"
+								        />
+								    </div>
+								</li>
+						</th:block>
+					</ul>
+				</div>						
         <textarea id="boardComment" name="boardComment" rows="5" th:text="${board.boardComment}" required></textarea><br/>
 
 		<div class="button-group">

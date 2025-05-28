@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dish.board.mapper.AttachFileMapper;
 import com.dish.board.vo.AttachFileDetailVO;
 import com.dish.board.vo.AttachFileMasterVO;
+import com.dish.board.vo.FileDeleteRequest;
 import com.dish.board.vo.MemberVO;
 import com.dish.util.UploadFileUtil;
 
@@ -146,5 +147,13 @@ public class AttachFileService {
 		vo.setCreator(memberVO.getUserName());
 		attachFileMapper.insertFileMaster(vo);
 		return vo;
+	}
+
+	public void deleteFile(FileDeleteRequest fileRDeleteRequest) {
+		attachFileMapper.deleteFile(fileRDeleteRequest);
+		
+		
+		
+		
 	}
 }
