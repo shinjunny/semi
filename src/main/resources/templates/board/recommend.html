@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>점심 메뉴 추천</title>
     <link rel="stylesheet" href="/static/css/recommend.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+	<script src="/static/js/Winwheel.min.js"></script>
 </head>
 
 <body>
 	<header>
-	   <div class="img">
-	     <img src="https://img.icons8.com/emoji/96/bento-box-emoji.png" alt="Lunch Icon">
-	   </div>
 	   <h1 style="text-align:center">오늘 뭐 먹지? 🍽️</h1>
 	   <div class="sub-title">오늘 뭐 먹지? 고민 끝~ 🍙</div>
 	 </header>
@@ -40,13 +39,21 @@
         <option value="family">가족</option>
         <option value="group">모임</option>
     </select>
+	
+	<canvas id="wheelcanvas" width="500" height="500"></canvas>
+	<!--button onclick="spinWheel()">룰렛 돌리기!</button-->
+	<div id="wheel-indicator"></div>
+	<div id="wheelResult" style="text-align: center; margin-top: 20px; font-size: 1.2em;"></div>
 
 	<div class="button-group" style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
 	  <button onclick="recommendMenu()">추천받기</button>
 	  <button onclick="reRecommendMenu()">다시 추천!</button>
 	</div>
-	<div id="recommendationResult" style="margin-top: 20px; text-align: center; font-size: 1.2em;"></div>
-
+	<div id="recommendationArea">
+	  <div id="rouletteWrapper">
+	    <div id="roulette"></div>
+	  </div>
+	</div>
 <script>
     const menuMap = {
 		// 🍚 meal (식사)
@@ -86,11 +93,65 @@
 	function getRandomItem(arr) {
 	    return arr[Math.floor(Math.random() * arr.length)];
 	}
+	
+	let theWheel;
+
+	function setupWheel(menuList) {
+	    // 색상 배열 (메뉴 개수 이상으로 충분히 준비)
+	    const colors = [
+				'#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+		        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+		        '#008080', '#e6beff', '#9a6324', '#fffac8', '#808080',
+		        '#aaffc3', '#808000', '#ffd8b1'
+		];
+
+	    // 색상을 섞기
+	    const shuffledColors = colors.sort(() => 0.5 - Math.random());
+
+	    theWheel = new Winwheel({
+	        canvasId: "wheelcanvas",
+	        numSegments: menuList.length,
+	        outerRadius: 200,
+	        textFontSize: 16,
+	        segments: menuList.map((name, idx) => ({
+	            fillStyle: shuffledColors[idx % shuffledColors.length],  // 색을 순환해서 고르게
+	            text: name
+	        })),
+	        animation: {
+	            type: 'spinToStop',
+	            duration: 5,
+	            spins: 8,
+	            callbackFinished: function (indicatedSegment) {
+	                document.getElementById('wheelResult').innerHTML =
+	                    `오늘의 추천 메뉴는 <strong>${indicatedSegment.text}</strong>입니다! 🍽️`;
+	            }
+	        }
+	    });
+	}
+
+	function spinWheel() {
+	    if (!theWheel) {
+	        alert("먼저 추천할 메뉴를 설정해주세요!");
+	        return;
+	    }
+	    theWheel.startAnimation();
+	}
+	
+	function showIndicator() {
+	  const indicator = document.getElementById('wheel-indicator');
+	  indicator.style.opacity = '1';
+	  indicator.style.animation = 'fadeInDown 0.5s ease forwards';
+	}
 
 	function recommendMenu() {
 	    const type = document.getElementById("mealType").value;
-	    const category = document.getElementById("foodStyle").value; // 고침!
+	    const category = document.getElementById("foodStyle").value;
 	    const situation = document.getElementById("situation").value;
+
+	    if (!type || !category || !situation) {
+	        alert("모든 선택지를 선택해주세요!");
+	        return;
+	    }
 
 	    const key = `${type}_${category}_${situation}`;
 	    lastKey = key;
@@ -100,23 +161,31 @@
 	    if (!menuOptions) {
 	        const allMenus = Object.values(menuMap).flat();
 	        const backup = getRandomItem(allMenus);
-	        document.getElementById("recommendationResult").innerText = `추천할 메뉴가 없어 대신 '${backup}'을 추천해요! 😋`;
+	        document.getElementById("wheelResult").innerHTML = `추천할 메뉴가 없어 대신 <strong>${backup}</strong>을 추천해요! 😋`;
 	        return;
 	    }
 
-	    const menu = getRandomItem(menuOptions);
-	    document.getElementById("recommendationResult").innerText = `오늘의 추천 메뉴는 '${menu}'입니다! 🍽️`;
-	}
+	    setupWheel(menuOptions);
+		
+		showIndicator();
 
+	    setTimeout(() => {
+	        spinWheel();
+	    }, 100);
+		document.getElementById('wheelcanvas').style.display = 'block';
+	}
+	
 	function reRecommendMenu() {
 	    if (!lastKey || !menuMap[lastKey]) {
-	        document.getElementById("recommendationResult").innerText = "먼저 추천을 받아야 다시 추천할 수 있어요! 👀";
+	        alert("먼저 추천 버튼을 눌러주세요!");
 	        return;
 	    }
-
-	    const menu = getRandomItem(menuMap[lastKey]);
-	    document.getElementById("recommendationResult").innerText = `다시 추천된 메뉴는 '${menu}'입니다! 🍽️`;
-	}
+	    setupWheel(menuMap[lastKey]);
+		
+		setTimeout(() => {
+		       spinWheel();
+		}, 100);
+	}  
 </script>
 </body>
 </html>
