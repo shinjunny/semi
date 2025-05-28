@@ -1,6 +1,9 @@
 package com.dish.board.serviceImpl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import com.dish.board.mapper.BoardMapper;
 import com.dish.board.service.BoardService;
@@ -53,5 +56,19 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardVO> getBoardsByUserId(String userId) {
         return boardMapper.selectBoardsByUserId(userId);
+    }
+    
+    
+    
+    
+    
+    @Override
+    public List<BoardVO> getBoardsByTypeWithPaging(String boardType, int limit, int offset) {
+        return boardMapper.selectBoardsByTypeWithPaging(boardType, limit, offset);
+    }
+
+    @Override
+    public int countBoardsByType(String boardType) {
+        return boardMapper.countBoardsByType(boardType);
     }
 }

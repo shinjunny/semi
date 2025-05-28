@@ -1,5 +1,7 @@
 package com.dish.board.service;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.dish.board.vo.MemberVO;
 
 public interface MemberService {
@@ -19,4 +21,12 @@ public interface MemberService {
 	void deleteMember(String userId);
 	
 	void updateMember(MemberVO member);
+	
+	// 임시비번
+	// 비밀번호 찾기 신준 2025-05-22
+	void sendTempPassword(String to, String tempPassword);
+
+	// 비번재설정
+	// 비밀번호 찾기 신준 2025-05-22
+	void updatePassword(@Param("userId") String userId, @Param("userPw") String userPw);
 }

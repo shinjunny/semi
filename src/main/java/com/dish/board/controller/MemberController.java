@@ -3,7 +3,9 @@ package com.dish.board.controller;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -176,4 +178,73 @@ public class MemberController {
             return "redirect:/member/info/" + userId + "/edit";
         }
     }
+    
+    @PostMapping("/password-reset-direct")
+	public ResponseEntity<String> resetPasswordDirectly(@RequestParam String userId) {
+		MemberVO member = memberService.findByUserId(userId);
+		if (member == null) {
+			return ResponseEntity.badRequest().body("존재하지 않는 사용자입니다.");
+		}
+
+		// 임시 비밀번호 생성
+		String tempPassword = UUID.randomUUID().toString().substring(0, 8);
+
+		// 비밀번호 암호화 후 DB에 저장
+		memberService.updatePassword(userId, tempPassword);
+
+		// 이메일 전송
+		memberService.sendTempPassword(member.getEmail(), tempPassword);
+
+		return ResponseEntity.ok("임시 비밀번호가 이메일로 전송되었습니다.");
+	}
+
+	// 비밀번호 찾기 신준 2025-05-22
+	@GetMapping("/find-password")
+	public String showFindPasswordPage() {
+		return "member/find-password";
+	}
+
+	// 비밀번호 찾기 신준 2025-05-22
+	@PostMapping("/find-password")
+	public String findPassword(@RequestParam("userId") String userId, @RequestParam("email") String email,
+			Model model) {
+
+		log.info(email);
+		log.info(userId);
+
+		MemberVO member = memberService.findByUserId(userId);
+
+		if (member == null || !member.getEmail().equals(email)) {
+			model.addAttribute("error", "아이디 또는 이메일이 일치하지 않습니다.");
+			return "member/find-password";
+		}
+
+		// 임시 비밀번호 생성
+		String tempPassword = UUID.randomUUID().toString().substring(0, 8);
+		memberService.updatePassword(userId, tempPassword); // DB에 반영
+		memberService.sendTempPassword(email, tempPassword); // 이메일 전송
+
+		model.addAttribute("message", "임시 비밀번호가 이메일로 전송되었습니다.");
+		return "member/find-password";
+	}
+
+	// 비밀번호 재설정 신준 2025-05-26
+	@GetMapping("/update-password")
+	public String showUpdatePasswordPage(@RequestParam(required = false) String userId, Model model) {
+		model.addAttribute("userId", userId);
+		return "member/update-password"; // templates/member/updatePassword.html
+	}
+
+	@PostMapping("/update-password")
+	public String updatePassword(@RequestParam String userId, @RequestParam String newPassword, Model model) {
+		try {
+			memberService.updatePassword(userId, newPassword);
+			// model.addAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
+			return "redirect:/member/update-password?success=true"; 
+		} catch (Exception e) {
+			// model.addAttribute("message", "비밀번호 변경 중 오류 발생.");
+			return "redirect:/member/update-password?success=false";
+		}
+		// return "member/update-password";
+	}
 }

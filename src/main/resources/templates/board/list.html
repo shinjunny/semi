@@ -1,51 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>게시판 목록</title>
-    <meta charset="UTF-8">
-	<link rel="stylesheet" href="/static/css/list.css" />
-</head>
-<body>
-<div class="container">
-    <h1 th:switch="${boardType}">
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/static/css/list.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 th:switch="${boardType}">
         <span th:case="1">동네 맛집 게시판</span>
         <span th:case="2">지역 먹거리 축제 게시판</span>
         <span th:case="3">오늘의 레시피 게시판</span>
         <span th:case="4">푸드 커뮤니티 게시판</span>
         <span th:case="5">점심 메뉴 추천 게시판</span>
         <span th:case="*">알 수 없음</span>
-    </h1>
+      </h1>
 
-    <div class="message" th:if="${message}">
+      <div class="message" th:if="${message}">
         <p th:text="${message}"></p>
-    </div>
+      </div>
 
-    <table th:unless="${message}">
+      <table th:unless="${message}">
         <thead>
-        <tr>
+          <tr>
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
             <th>작성일</th>
-        </tr>
+          </tr>
         </thead>
         <tbody>
-        <tr th:each="board : ${boards}">
+          <tr th:each="board : ${boards}">
             <td data-label="번호" th:text="${board.boardNum}"></td>
             <td data-label="제목">
-                <a th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum})}"
-                   th:text="${board.boardTitle}"></a>
+              <a
+                th:href="@{/board/type/{boardType}/{boardNum}(boardType=${board.boardType}, boardNum=${board.boardNum})}"
+                th:text="${board.boardTitle}"
+              ></a>
             </td>
             <td data-label="작성자" th:text="${board.writer}"></td>
-            <td data-label="작성일" th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></td>
-        </tr>
+            <td
+              data-label="작성일"
+              th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"
+            ></td>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
-    <div class="button-group">
-        <a class="button" th:href="@{/board/type/{boardType}/write(boardType=${boardType})}">글쓰기</a>
+      <div class="pagination" th:if="${totalCount > pageSize}">
+        <a
+          th:if="${currentPage > 1}"
+          th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${currentPage - 1}, size=${pageSize})}"
+          >이전</a
+        >
+
+        <a
+          th:each="pageNum : ${#numbers.sequence(1, (totalCount + pageSize -1) / pageSize)}"
+          th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${pageNum}, size=${pageSize})}"
+          th:text="${pageNum}"
+          th:classappend="${pageNum == currentPage} ? 'active' : ''"
+        ></a>
+
+        <a
+          th:if="${currentPage < (totalCount + pageSize -1) / pageSize}"
+          th:href="@{/board/type/{boardType}(boardType=${boardType}, page=${currentPage + 1}, size=${pageSize})}"
+          >다음</a
+        >
+      </div>
+
+      <div class="button-group">
+        <a
+          class="button"
+          th:href="@{/board/type/{boardType}/write(boardType=${boardType})}"
+          >글쓰기</a
+        >
         <a class="button" th:href="@{/}">홈으로</a>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>

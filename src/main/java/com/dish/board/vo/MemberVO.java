@@ -22,7 +22,7 @@ public class MemberVO {
 	private String userPhone3;
 	private String userAddr1;
 	private String userAddr2;
-	private String userCompany;
+	private String Email;
 	private String creator;
     private LocalDateTime createTime;
     private String modifier;

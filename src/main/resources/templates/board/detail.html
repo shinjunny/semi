@@ -1,54 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>게시글 상세</title>
-    <meta charset="UTF-8">
-	<link rel="stylesheet" href="/static/css/detail.css" />
-</head>
-<body>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/static/css/detail.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 th:text="${board.boardTitle}">제목</h1>
 
-<div class="container">
-    <h1 th:text="${board.boardTitle}">제목</h1>
-
-    <div class="meta">
+      <div class="meta">
         <p><strong>작성자:</strong> <span th:text="${board.writer}"></span></p>
-        <p><strong>작성일:</strong> <span th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"></span></p>
-    </div>
+        <p>
+          <strong>작성일:</strong>
+          <span
+            th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}"
+          ></span>
+        </p>
+      </div>
 
-    <div class="content" th:utext="${board.boardComment}">
+      <div class="content" th:utext="${board.boardComment}">
         게시글 내용이 여기에 표시됩니다.
+      </div>
+
+      <!-- 댓글 섹션 -->
+      <section class="comment-section">
+        <!-- 댓글 작성 폼 -->
+        <h3>댓글 작성</h3>
+        <form
+          th:action="@{/board/type/{boardType}/{boardNum}/comment(boardType=${boardType}, boardNum=${board.boardNum})}"
+          method="post"
+          class="comment-form"
+        >
+          <input type="hidden" name="fromInfo" th:value="${infoView}" />
+          <textarea
+            name="content"
+            rows="4"
+            placeholder="댓글을 입력하세요"
+            required
+          ></textarea>
+          <button type="submit">댓글 작성</button>
+        </form>
+
+        <!-- 댓글 목록 -->
+        <div style="margin-top: 30px">
+          <h3>댓글 목록</h3>
+          <div
+            th:each="comment : ${comments}"
+            style="
+              margin-bottom: 20px;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 10px;
+            "
+          >
+            <p>
+              <strong th:text="${comment.writer}">작성자</strong>
+              <span
+                style="color: #888; font-size: 12px"
+                th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}"
+                >작성일</span
+              >
+            </p>
+            <p th:text="${comment.content}">댓글 내용</p>
+
+            <!-- 본인 댓글만 수정/삭제 버튼 보이기 -->
+            <div
+              th:if="${loginUserId == comment.writer}"
+              class="comment-actions"
+            >
+              <form
+                th:action="@{'/board/type/' + ${boardType} + '/' + ${board.boardNum} + '/comment/edit/' + ${comment.commentId}}"
+                method="get"
+                style="display: inline"
+              >
+                <input type="hidden" name="fromInfo" th:value="${infoView}" />
+                <button type="submit" class="edit-btn">수정</button>
+              </form>
+
+              <form
+                th:action="@{'/board/type/' + ${boardType} + '/' + ${board.boardNum} + '/comment/delete/' + ${comment.commentId}}"
+                method="get"
+                style="display: inline"
+                onsubmit="return confirm('댓글을 삭제하시겠습니까?');"
+              >
+                <input type="hidden" name="fromInfo" th:value="${infoView}" />
+                <button type="submit" class="delete-btn">삭제</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="button-group">
+        <!-- 수정/삭제 버튼 (작성자만 보이게) -->
+        <a
+          class="button"
+          th:if="${loginUserId} == ${board.creator}"
+          th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
+        >
+          수정
+        </a>
+
+        <a
+          class="button"
+          th:if="${loginUserId} == ${board.creator}"
+          th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
+          onclick="return confirm('정말 삭제하시겠습니까?')"
+        >
+          삭제
+        </a>
+
+        <!-- 내 정보 버튼 (내 정보 진입 시) -->
+        <span th:if="${infoView == 't'}">
+          <a
+            class="button"
+            th:href="@{/member/info/{userId}(userId=${board.writer})}"
+          >
+            내 정보
+          </a>
+        </span>
+
+        <!-- 목록으로 버튼 (기본 진입 시) -->
+        <span th:unless="${infoView == 't'}">
+          <a
+            class="button"
+            th:href="@{/board/type/{boardType}(boardType=${boardType})}"
+          >
+            목록으로
+          </a>
+        </span>
+      </div>
     </div>
-
-	<div class="button-group">
-	    <!-- 수정/삭제 버튼 (작성자만 보이게) -->
-	    <a class="button"
-	       th:if="${loginUserId} == ${board.creator}"
-	       th:href="@{/board/type/{boardType}/edit/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}">
-	        수정
-	    </a>
-
-	    <a class="button"
-	       th:if="${loginUserId} == ${board.creator}"
-	       th:href="@{/board/type/{boardType}/delete/{boardNum}(boardType=${boardType}, boardNum=${board.boardNum}, fromInfo=${infoView})}"
-	       onclick="return confirm('정말 삭제하시겠습니까?')">
-	        삭제
-	    </a>
-
-	    <!-- 뒤로가기 버튼 (내 정보 진입 시) -->
-	    <button class="back-btn"
-	            type="button"
-	            th:if="${infoView}"
-	            onclick="history.back()">
-	        뒤로가기
-	    </button>
-
-	    <!-- 목록으로 버튼 (기본 진입 시) -->
-	    <a class="button"
-	       th:unless="${infoView}"
-	       th:href="@{/board/type/{boardType}(boardType=${boardType})}">
-	        목록으로
-	    </a>
-	</div>
-</div>
-</body>
+  </body>
 </html>

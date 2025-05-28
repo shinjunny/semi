@@ -120,6 +120,8 @@ src/test/
 
 /nbbuild/
 
+/target/
+
 /dist/
 
 /nbdist/
