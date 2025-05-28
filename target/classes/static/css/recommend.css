@@ -130,4 +130,30 @@ button:hover {
   }
 }
 
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+#wheel-indicator {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 25px solid red;
+  z-index: 10;
+  
+  opacity: 0; /* 초기엔 숨김 */
+  animation-fill-mode: forwards;
+}
 

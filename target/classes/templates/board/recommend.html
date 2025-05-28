@@ -44,7 +44,8 @@
     </select>
 	
 	<canvas id="wheelcanvas" width="500" height="500"></canvas>
-	<button onclick="spinWheel()">룰렛 돌리기!</button>
+	<!--button onclick="spinWheel()">룰렛 돌리기!</button-->
+	<div id="wheel-indicator"></div>
 	<div id="wheelResult" style="text-align: center; margin-top: 20px; font-size: 1.2em;"></div>
 
 	<div class="button-group" style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
@@ -99,12 +100,26 @@
 	let theWheel;
 
 	function setupWheel(menuList) {
+	    // 색상 배열 (메뉴 개수 이상으로 충분히 준비)
+	    const colors = [
+				'#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+		        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+		        '#008080', '#e6beff', '#9a6324', '#fffac8', 
+		        '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
+		];
+
+	    // 색상을 섞기
+	    const shuffledColors = colors.sort(() => 0.5 - Math.random());
+
 	    theWheel = new Winwheel({
-			canvasId: "wheelcanvas",
+	        canvasId: "wheelcanvas",
 	        numSegments: menuList.length,
 	        outerRadius: 200,
 	        textFontSize: 16,
-	        segments: menuList.map(name => ({ fillStyle: getRandomColor(), text: name })),
+	        segments: menuList.map((name, idx) => ({
+	            fillStyle: shuffledColors[idx % shuffledColors.length],  // 색을 순환해서 고르게
+	            text: name
+	        })),
 	        animation: {
 	            type: 'spinToStop',
 	            duration: 5,
@@ -128,6 +143,12 @@
 	        return;
 	    }
 	    theWheel.startAnimation();
+	}
+	
+	function showIndicator() {
+	  const indicator = document.getElementById('wheel-indicator');
+	  indicator.style.opacity = '1';
+	  indicator.style.animation = 'fadeInDown 0.5s ease forwards';
 	}
 
 	function recommendMenu() {
@@ -153,20 +174,26 @@
 	    }
 
 	    setupWheel(menuOptions);
+		
+		showIndicator();
 
 	    setTimeout(() => {
 	        spinWheel();
 	    }, 100);
 		document.getElementById('wheelcanvas').style.display = 'block';
-		
-		function reRecommendMenu() {
-		    if (!lastKey || !menuMap[lastKey]) {
-		        alert("먼저 추천 버튼을 눌러주세요!");
-		        return;
-		    }
-		    setupWheel(menuMap[lastKey]);
-		}  
 	}
+	
+	function reRecommendMenu() {
+	    if (!lastKey || !menuMap[lastKey]) {
+	        alert("먼저 추천 버튼을 눌러주세요!");
+	        return;
+	    }
+	    setupWheel(menuMap[lastKey]);
+		
+		setTimeout(() => {
+		       spinWheel();
+		}, 100);
+	}  
 </script>
 </body>
 </html>
