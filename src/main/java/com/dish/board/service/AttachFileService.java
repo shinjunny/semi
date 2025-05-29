@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dish.board.mapper.AttachFileMapper;
 import com.dish.board.vo.AttachFileDetailVO;
+import com.dish.board.vo.AttachFileMasterVO;
+import com.dish.board.vo.FileDeleteRequest;
 import com.dish.board.vo.MemberVO;
 import com.dish.util.UploadFileUtil;
 
@@ -42,7 +44,8 @@ public class AttachFileService {
 	
 	public List<AttachFileDetailVO> save(
 			List<MultipartFile> files, 
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request,
+			Long masterId) throws IOException {
 		
 		List<AttachFileDetailVO> resultList = new ArrayList<>();
 		
@@ -73,7 +76,7 @@ public class AttachFileService {
 			
 			// VO 생성
 			AttachFileDetailVO vo = AttachFileDetailVO.builder()
-					.fileMasterId(1L)
+					.fileMasterId(masterId)
 					.fileName(saveFileNameArray[saveFileNameArray.length - 1])
 					.filePath(rootLocation.toString()
 							.replace(File.separatorChar, '/') + 
@@ -127,5 +130,29 @@ public class AttachFileService {
 		}
 		return null;
 	}
+	
+	public List<AttachFileDetailVO> findFilesByMasterId(Long masterId) {
+		
+		return attachFileMapper.findFilesByMasterId(masterId);
+	}
+	
+	/**
+	 * 첨부파일 마스터 테이블에 row 신규 생성
+	 * @param request
+	 * @return
+	 */
+	public AttachFileMasterVO getMasterId(HttpServletRequest request) {
+		
+		AttachFileMasterVO vo = new AttachFileMasterVO();
+		HttpSession session = request.getSession();
+        MemberVO memberVO = (MemberVO) session.getAttribute("userInfo");
+		vo.setCreator(memberVO.getUserName());
+		attachFileMapper.insertFileMaster(vo);
+		return vo;
+	}
+	
+	public void deleteFile(FileDeleteRequest fileRDeleteRequest) {
+		
+		attachFileMapper.deleteFile(fileRDeleteRequest);
+	}
 }
-// final test dish

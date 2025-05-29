@@ -132,6 +132,83 @@
 		.back-btn:hover {
 		    background-color: #777;
 		}
+		
+		.btnDelete {
+		    padding: 6px 12px;
+		    font-size: 14px;
+		    width: auto;
+		    background-color: #ff7f50;
+		    color: white;
+		    border: none;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    margin-top: 10px;
+			margin-bottom: 15px;
+		    transition: background-color 0.3s ease;
+		    display: block;
+		}
+
+		.btnDelete:hover {
+		    background-color: #ff9268;
+		}
+		
+		.custom-file-label {
+		    padding: 8px 16px;
+		    background-color: #ff7f50;
+		    color: white;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    display: inline-block;
+		    user-select: none;
+		 }
+	
+		 #fileNameDisplay {
+		    margin-left: 12px;
+		    font-style: italic;
+		    color: #666;
+		    display: none;  /* 기본 숨김 */
+		 }
+		 
+		 .custom-file-label {
+		    padding: 8px 16px;
+		    background-color: #ff7f50;
+		    color: white;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    display: inline-block;
+		    user-select: none;
+		   
+		    width: 150px;       /* 고정 너비 */
+		    text-align: center;
+		    white-space: nowrap;   /* 텍스트가 넘칠 경우 줄 바꿈 방지 */
+		    overflow: hidden;      /* 넘치는 텍스트 숨김 */
+		    text-overflow: ellipsis; /* 말줄임 표시 */
+		 }
+		 
+		 .custom-file-label {
+		    padding: 8px 14px;
+		    background-color: #ff7f50;
+		    color: white;
+		    border-radius: 20px;      /* 둥글둥글하게 크게 */
+		    cursor: pointer;
+		    display: inline-block;
+		    user-select: none;
+
+ 		    width: 120px;             /* 가로 너비 더 작게 */
+ 		    text-align: center;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+
+		    font-weight: 600;         /* 약간 굵게 */
+		    font-size: 14px;
+		    box-shadow: 0 4px 8px rgba(255, 127, 80, 0.3); /* 은은한 그림자 */
+		    transition: background-color 0.3s ease;
+		 }
+
+		 .custom-file-label:hover {
+		    background-color: #ff9268;  /* 호버시 색상 변화 */
+		 }
     </style>
 </head>
 <body>
@@ -145,7 +222,7 @@
         <span th:case="*">알 수 없음</span>
     </h1>
 
-    <form th:action="@{/board/type/{boardType}/edit(boardType=${boardType}, fromInfo=${fromInfo})}" method="post">
+    <!-- <form th:action="@{/board/type/{boardType}/edit(boardType=${boardType}, fromInfo=${fromInfo})}" method="post">
         <input type="hidden" name="boardNum" th:value="${board.boardNum}" />
         <input type="hidden" name="boardType" th:value="${board.boardType}" />
 
@@ -164,17 +241,181 @@
 
         <label for="boardComment">내용:</label>
         <textarea id="boardComment" name="boardComment" rows="5" th:text="${board.boardComment}" required></textarea><br/>
-
+		
+		<div>
+		  <ul>
+		    <th:block th:if="${fileList != null and #lists.size(fileList) > 0}">
+		      <li th:each="file : ${fileList}" class="file-preview">
+		        <div th:if="${#strings.contains(file.fileMime, 'image')}">
+		          <img th:src="@{'/api/file/view/fileName/' + ${file.fileName}}" alt="첨부 이미지 미리보기" />
+		        </div>
+		      </li>
+		    </th:block>
+		  </ul>
+		</div>
+	
 		<div class="button-group">
 		    <button type="submit">수정</button>
-
-		    <!-- 목록으로 버튼 (기본 진입 시에만 표시) -->
+		    
 		    <a class="button" th:href="@{/board/type/{boardType}(boardType=${boardType})}" th:unless="${fromInfo}">목록으로</a>
-
-		    <!-- 뒤로가기 버튼 (내 정보 진입 시에만 표시) -->
+		    
 		    <button type="button" class="back-btn" onclick="history.back()" th:if="${fromInfo}">뒤로가기</button>
 		</div>
-    </form>
+    </form> -->
+	<form th:action="@{/board/type/{boardType}/edit(boardType=${boardType}, fromInfo=${fromInfo})}" method="post">
+	    <input type="hidden" name="boardNum" th:value="${board.boardNum}" />
+	    <input type="hidden" name="boardType" th:value="${board.boardType}" />
+	    <input type="hidden" id="fileMasterId" name="fileMasterId" th:value="${board.fileMasterId}" />
+
+	    <label for="boardTitle">제목:</label>
+	    <input type="text" id="boardTitle" name="boardTitle" th:value="${board.boardTitle}" required /><br/>
+
+	    <label>유형:</label>
+	    <span th:switch="${board.boardType}">
+	        <span th:case="1">동네 맛집</span>
+	        <span th:case="2">지역 먹거리 축제</span>
+	        <span th:case="3">오늘의 레시피</span>
+	        <span th:case="4">푸드 커뮤니티</span>
+	        <span th:case="5">점심 메뉴 추천</span>
+	        <span th:case="*">알 수 없음</span>
+	    </span><br/>
+
+	    <label for="boardComment">내용:</label>
+	    <textarea id="boardComment" name="boardComment" rows="5" th:text="${board.boardComment}" required></textarea><br/>
+
+	    <!-- 파일 업로드 인풋 -->
+	    <!-- <input type="file" id="file" multiple /> -->
+		<label for="file" class="custom-file-label">파일 선택</label>
+		<input type="file" id="file" multiple style="display:none;">
+		<span id="fileNameDisplay"></span>
+		<script>
+		  	const realFileInput = document.getElementById('file');
+		  	const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+		  	realFileInput.addEventListener('change', () => {
+		    	fileNameDisplay.style.display = 'none';
+		  	});
+		</script>
+				
+	    <!-- 첨부파일 목록 -->
+	    <ul id="imageList">
+	        <th:block th:if="${fileList != null and #lists.size(fileList) > 0}">
+	            <li th:each="file : ${fileList}" class="file-preview" th:data-file-id="${file.fileId}" th:data-file-master-id="${file.fileMasterId}">
+					<div th:if="${#strings.contains(file.fileMime, 'image')}">
+	                    <img th:src="@{'/api/file/view/fileName/' + ${file.fileName}}" alt="첨부 이미지 미리보기" style="max-height: 100px;" />
+	                </div>
+	                <button type="button" class="btnDelete"
+	                    th:data-file-id="${file.fileId}"
+	                    th:data-file-name="${file.fileName}"
+	                    th:data-file-master-id="${file.fileMasterId}">
+	                    삭제
+	                </button>
+	            </li>
+	        </th:block>
+	    </ul>
+
+	    <div class="button-group">
+	        <button type="submit">수정</button>
+	        <a class="button" th:href="@{/board/type/{boardType}(boardType=${boardType})}" th:unless="${fromInfo}">목록으로</a>
+	        <button type="button" class="back-btn" onclick="history.back()" th:if="${fromInfo}">뒤로가기</button>
+	    </div>
+	</form>
+
+	<script>
+	    // 삭제 버튼 이벤트 위임
+	    document.querySelector('#imageList').addEventListener('click', function(e) {
+	        if (e.target.classList.contains('btnDelete')) {
+	            const btn = e.target;
+	            const fileId = btn.dataset.fileId;
+	            const fileName = btn.dataset.fileName;
+	            const fileMasterId = btn.dataset.fileMasterId;
+
+	            if (!fileId) return;
+
+	            const request = { fileId, fileName, fileMasterId };
+
+	            fetch('/api/file/delete', {
+	                method: 'POST',
+	                body: JSON.stringify(request),
+	                headers: { 'Content-type': 'application/json' }
+	            })
+	            .then(res => res.json())
+	            .then(data => {
+	                if (data.status === 'success') {
+	                    // 삭제 성공시 목록에서 li 제거
+	                    const li = btn.closest('li');
+	                    if (li) li.remove();
+	                } else {
+	                    alert('파일 삭제에 실패했습니다.');
+	                }
+	            })
+	            .catch(err => {
+	                console.error('삭제 오류:', err);
+	                alert('파일 삭제 중 오류가 발생했습니다.');
+	            });
+	        }
+	    });
+
+	    // 파일 업로드 처리
+	    const fileInput = document.querySelector('#file');
+	    let masterId = document.querySelector('#fileMasterId').value;
+
+	    fileInput.addEventListener('change', function(e) {
+	        const files = e.target.files;
+	        if (files.length === 0) return;
+
+	        const formData = new FormData();
+	        for (let i = 0; i < files.length; i++) {
+	            formData.append('files', files[i]);
+	        }
+	        formData.append('masterId', masterId);
+
+	        fetch('/api/file/save', {
+	            method: 'POST',
+	            body: formData
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            if (data.length > 0) {
+	                const ul = document.querySelector('#imageList');
+	                data.forEach(item => {
+	                    // 중복 추가 방지: 이미 존재하는 파일Id가 있으면 건너뜀
+	                    if (ul.querySelector('li[data-file-id="' + item.fileId + '"]')) return;
+
+	                    const li = document.createElement('li');
+	                    li.classList.add('file-preview');
+	                    li.dataset.fileId = item.fileId;
+	                    li.dataset.fileMasterId = item.fileMasterId;
+
+	                    if(item.fileMime && item.fileMime.startsWith('image')) {
+	                        const img = document.createElement('img');
+	                        img.src = '/api/file/view/fileName/' + item.fileName;
+	                        img.alt = '첨부 이미지 미리보기';
+	                        img.style.maxHeight = '100px';
+	                        li.appendChild(img);
+	                    }
+
+	                    const btn = document.createElement('button');
+	                    btn.type = 'button';
+	                    btn.classList.add('btnDelete');
+	                    btn.textContent = '삭제';
+	                    btn.dataset.fileId = item.fileId;
+	                    btn.dataset.fileName = item.fileName;
+	                    btn.dataset.fileMasterId = item.fileMasterId;
+
+	                    li.appendChild(btn);
+	                    ul.appendChild(li);
+	                });
+	                // input 초기화해서 동일 파일 재선택 가능하게
+	                fileInput.value = '';
+	            }
+	        })
+	        .catch(err => {
+	            console.error('업로드 오류:', err);
+	            alert('파일 업로드 중 오류가 발생했습니다.');
+	        });
+	    });
+	</script>
 </div>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.dish.board.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +29,10 @@ public interface MemberMapper {
 	// 비번변경
 	// 비밀번호 찾기 신준 2025-05-22
 	void updatePassword(@Param("userId") String userId, @Param("userPw") String userPw);
+	
+	List<MemberVO> selectAllMembers();
+	
+	MemberVO selectMemberByUserId(String userId);
+	
+	void deleteByUserId(String userId);
 }

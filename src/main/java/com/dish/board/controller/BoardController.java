@@ -1,5 +1,6 @@
 package com.dish.board.controller;
 
+import com.dish.board.vo.AttachFileDetailVO;
 import com.dish.board.vo.BoardVO;
 import com.dish.board.vo.CommentVO;
 import com.dish.board.vo.MemberVO;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
+import com.dish.board.service.AttachFileService;
 import com.dish.board.service.BoardService;
 import com.dish.board.service.CommentService;
 import com.dish.board.service.MemberService;
@@ -29,11 +31,13 @@ public class BoardController {
 	private final BoardService boardService;
 	private final MemberService memberService;
 	private final CommentService commentService;
+	private final AttachFileService attachFileService;
 
-    public BoardController(BoardService boardService, MemberService memberService, CommentService commentService) {
+    public BoardController(BoardService boardService, MemberService memberService, CommentService commentService, AttachFileService attachFileService) {
         this.boardService = boardService;
         this.memberService = memberService;
         this.commentService = commentService;
+        this.attachFileService = attachFileService;
     }
 
     // 게시글 목록
@@ -44,15 +48,6 @@ public class BoardController {
         return "board/list";
     }
     
-//    // 게시판 유형별 목록
-//    @GetMapping("/type/{boardType}")
-//    public String listByType(@PathVariable String boardType, Model model) {
-//        List<BoardVO> boards = boardService.getBoardsByType(boardType);
-//        model.addAttribute("boards", boards);
-//        model.addAttribute("boardType", boardType);
-//        // log.info(boards.toString());   
-//        return "board/list";
-//    }
     @GetMapping("/type/{boardType}")
     public String listByType(
         @PathVariable String boardType,
@@ -60,6 +55,13 @@ public class BoardController {
         @RequestParam(defaultValue = "10") int size,
         Model model) {
 
+    	// 2025/05/29 손준
+        if ("05".equals(boardType)) {
+            List<BoardVO> lunchMenus = boardService.getBoardsByType(boardType);
+            model.addAttribute("recommendations", lunchMenus);
+            return "board/recommend"; // → recommend.html
+        }
+    	
         int offset = (page - 1) * size;
         int limit = size;
 
@@ -99,6 +101,23 @@ public class BoardController {
     	model.addAttribute("infoView", fromInfo ? "t": "f");
     	model.addAttribute("comments", comments);
     	
+    	// 2) 첨부파일 조회 (fileMasterId 를 게시글 VO 에서 가져온다고 가정)
+//        Long masterId = board.getFileMasterId();
+//        log.info(String.valueOf(masterId));
+//        if (masterId != null) {
+//            List<AttachFileDetailVO> fileList = attachFileService.findFilesByMasterId(masterId);
+//            model.addAttribute("fileList", fileList);
+//        }
+    	Long masterId = board.getFileMasterId();
+    	log.info("masterId = " + masterId);
+    	if (masterId != null) {
+    	    List<AttachFileDetailVO> fileList = attachFileService.findFilesByMasterId(masterId);
+    	    log.info("fileList size = " + (fileList == null ? "null" : fileList.size()));
+    	    model.addAttribute("fileList", fileList);
+    	} else {
+    	    log.warn("fileMasterId is null");
+    	}
+
     	// 로그인한 유저의 ID를 모델에 추가
         if (loginUser != null) {
             model.addAttribute("loginUserId", loginUser.getUserId());
@@ -217,6 +236,13 @@ public class BoardController {
         board.setBoardType(boardType);
         board.setCreator(member.getUserId());
         board.setModifier(member.getUserId());
+        
+        // 업로드된 파일이 있다면 fileMasterId 설정
+        Long fileMasterId = (Long) request.getAttribute("fileMasterId");  // 또는 파라미터에서 받아오기
+        if (fileMasterId != null) {
+            board.setFileMasterId(fileMasterId);
+        }
+        
         boardService.createBoard(board);
         return "redirect:/board/type/" + boardType;
     }
@@ -231,6 +257,16 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("boardType", boardType);
         model.addAttribute("fromInfo", fromInfo);
+        
+        // 첨부파일 마스터 ID 가져오기 (board 객체에서)
+        Long masterId = board.getFileMasterId();
+
+        if (masterId != null) {
+            // attachFileService에서 첨부파일 리스트 조회
+            List<AttachFileDetailVO> fileList = attachFileService.findFilesByMasterId(masterId);
+            model.addAttribute("fileList", fileList);
+        }
+        
         return "board/edit";
     }
 
@@ -239,7 +275,8 @@ public class BoardController {
     public String edit(@PathVariable String boardType,
                        @ModelAttribute BoardVO board,
                        @RequestParam(value = "fromInfo", required = false, defaultValue = "f") String fromInfo,
-                       HttpSession session) {
+                       HttpSession session,
+                       HttpServletRequest request) {
         MemberVO loginUser = (MemberVO) session.getAttribute("userInfo");
         if (loginUser != null) {
             board.setModifier(loginUser.getUserId());
@@ -247,8 +284,15 @@ public class BoardController {
             board.setModifier("anonymous");
         }
 
+        // 업로드된 파일이 있다면 fileMasterId 설정
+        Long fileMasterId = (Long) request.getAttribute("fileMasterId");  // 또는 파라미터에서 받아오기
+        if (fileMasterId != null) {
+            board.setFileMasterId(fileMasterId);
+        }
+        
         boardService.updateBoard(board);
 
+        
         if (fromInfo.equals("t") && loginUser != null) {
             return "redirect:/member/info/" + loginUser.getUserId();
         }

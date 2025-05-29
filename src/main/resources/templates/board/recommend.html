@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>점심 메뉴 추천</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+	<script src="/static/js/Winwheel.min.js"></script>
+	<style>
+		:root {
+		  --primary-color: #ff7f50;
+		  --light-bg: #f4f5f7;
+		  --text-color: #333;
+		  --accent-color: #ff7f50;
+		  --box-bg: #ffffff;
+		  --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+		}
+
+		body {
+		  font-family: "Segoe UI", "Pretendard", sans-serif;
+		  background-color: var(--light-bg);
+		  margin: 0;
+		  padding: 0;
+		  color: var(--text-color);
+		}
+
+		header .img {
+		  text-align: center;
+		  padding: 20px 0;
+		}
+
+		header img {
+		  height: 80px;
+		}
+
+		h1 {
+		  font-size: 28px;
+		  text-align: center;
+		  color: var(--primary-color);
+		  margin-top: 0;
+		  padding-top: 20px;
+		  font-weight: 700;
+		}
+
+		.sub-title {
+		  text-align: center;
+		  font-size: 20px;
+		  color: #555;
+		  margin-top: -10px;
+		  opacity: 0;
+		  animation: fadeIn 1s ease forwards;
+		  animation-delay: 0.5s;
+		}
+
+		@keyframes fadeIn {
+		  to {
+		    opacity: 1;
+		  }
+		}
+
+		.recommend-box {
+		  display: flex;
+		  flex-direction: column;
+		  gap: 16px;
+		  max-width: 420px;
+		  margin: 30px auto;
+		  padding: 30px 24px;
+		  background-color: var(--box-bg);
+		  border-radius: 16px;
+		  box-shadow: var(--box-shadow);
+		  text-align: center;
+		  position: relative;
+		}
+
+		.recommend-box img {
+		  width: 64px;
+		  margin: 0 auto -8px;
+		  animation: float 2s ease-in-out infinite;
+		}
+
+		@keyframes float {
+		  0%, 100% { transform: translateY(0); }
+		  50% { transform: translateY(-6px); }
+		}
+
+		select {
+		  padding: 12px;
+		  font-size: 16px;
+		  border: 1px solid #ddd;
+		  border-radius: 8px;
+		  appearance: none;
+		  background-color: #fff;
+		  transition: border-color 0.3s;
+		}
+
+		select:focus {
+		  outline: none;
+		  border-color: var(--primary-color);
+		  box-shadow: 0 0 0 3px rgba(255, 127, 80, 0.2);
+		}
+
+		button, a.btn {
+		  padding: 12px;
+		  font-size: 16px;
+		  background: linear-gradient(to right, #ff7f50, #ffa07a);
+		  color: white;
+		  border: none;
+		  border-radius: 10px;
+		  font-weight: 600;
+		  cursor: pointer;
+		  transition: background-color 0.3s, transform 0.2s ease;
+		  box-shadow: 0 6px 12px rgba(255, 127, 80, 0.2);
+		}
+
+		button:hover, a.btn:hover {
+		  transform: translateY(-2px);
+		}
+
+		#recommendationResult {
+		  margin-top: 20px;
+		  font-size: 18px;
+		  color: var(--primary-color);
+		  font-weight: bold;
+		}
+
+		@media (max-width: 500px) {
+		  .recommend-box {
+		    padding: 20px 16px;
+		    gap: 12px;
+		  }
+
+		  select, button {
+		    font-size: 15px;
+		    padding: 10px;
+		  }
+
+		  #recommendationResult {
+		    font-size: 16px;
+		  }
+		}
+
+		@keyframes fadeInDown {
+		  0% {
+		    opacity: 0;
+		    transform: translate(-50%, -20px);
+		  }
+		  100% {
+		    opacity: 1;
+		    transform: translate(-50%, 0);
+		  }
+		}
+
+		#wheel-indicator {
+		  position: absolute;
+		  top: 220px;
+		  left: 50%;
+		  transform: translateX(-50%);
+		  width: 0;
+		  height: 0;
+		  border-left: 15px solid transparent;
+		  border-right: 15px solid transparent;
+		  border-top: 25px solid red;
+		  z-index: 10;
+		  
+		  opacity: 0; /* 초기엔 숨김 */
+		  animation-fill-mode: forwards;
+		}
+		
+		a.btn {
+		  text-decoration: none;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+	   <h1 style="text-align:center">오늘 뭐 먹지? 🍽️</h1>
+	   <div class="sub-title">오늘 뭐 먹지? 고민 끝~ 🍙</div>
+	 </header>
+	 
+<div class="recommend-box">
+    <select id="mealType" onchange="updateNextSelect('mealType')">
+        <option value="" hidden>식사 종류 선택</option>
+        <option value="meal">식사</option>
+        <option value="cook">요리</option>
+        <option value="snack">간식</option>
+    </select>
+
+    <select id="foodStyle" onchange="updateNextSelect('foodStyle')" disabled>
+        <option value="" hidden>음식 종류 선택</option>
+        <option value="korean">한식</option>
+        <option value="chinese">중식</option>
+        <option value="japanese">일식</option>
+        <option value="western">양식</option>
+        <option value="asian">아시아</option>
+    </select>
+
+    <select id="situation" disabled>
+        <option value="" hidden>상황 선택</option>
+        <option value="alone">혼밥</option>
+        <option value="friend">친구</option>
+        <option value="date">연인</option>
+        <option value="family">가족</option>
+        <option value="group">모임</option>
+    </select>
+	
+	<canvas id="wheelcanvas" width="500" height="500"></canvas>
+	<!--button onclick="spinWheel()">룰렛 돌리기!</button-->
+	<div id="wheel-indicator"></div>
+	<div id="wheelResult" style="text-align: center; margin-top: 20px; font-size: 1.2em;"></div>
+
+	<div class="button-group" style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
+	  <button onclick="recommendMenu()">추천받기!</button>
+	  <button onclick="reRecommendMenu()">다시 추천!</button>
+	  <a href="/" class="btn">홈으로!</a>
+	</div>
+	<div id="recommendationArea">
+	  <div id="rouletteWrapper">
+	    <div id="roulette"></div>
+	  </div>
+	</div>
+	<script>
+	    const menuMap = {
+			// 🍚 meal (식사)
+		   "meal_korean_alone": ["김치찌개", "된장찌개", "제육덮밥", "비빔밥", "순두부찌개"],
+		   "meal_chinese_family": ["마라탕", "양장피", "팔보채", "깐풍기", "유산슬"],
+		   "meal_japanese_friend": ["규동", "가츠동", "라멘", "스시", "우동"],
+		   "meal_western_date": ["파스타", "스테이크", "샐러드볼", "피자", "크림리조또"],
+		   "meal_asian_group": ["팟타이", "반미", "포", "미고랭", "나시고렝"],
+	
+		   // 🍳 cook (요리 중심)
+		   "cook_korean_family": ["불고기", "닭갈비", "갈비찜", "잡채", "떡갈비"],
+		   "cook_chinese_date": ["깐풍기", "칠리새우", "꿔바로우", "마파두부", "탕수육"],
+		   "cook_japanese_alone": ["오코노미야끼", "타코야끼", "카레", "돈코츠라멘", "가라아게"],
+		   "cook_western_date": ["스테이크", "라자냐", "치킨 커틀릿", "로스트 치킨", "감바스"],
+		   "cook_asian_friend": ["나시고렝", "팟타이", "사떼", "볶음국수", "춘권"],
+	
+		   // 🍪 snack (간식/분식류)
+		   "snack_korean_friend": ["떡볶이", "순대", "김밥", "오뎅", "라면"],
+		   "snack_chinese_alone": ["꽈배기", "탕후루", "만두", "춘권", "과일탕"],
+		   "snack_japanese_date": ["모찌", "도라야끼", "팥빙수", "푸딩", "마차 아이스크림"],
+		   "snack_western_group": ["감자튀김", "핫도그", "프레즐", "베이글", "컵케이크"],
+		   "snack_asian_group": ["나시고렝", "팟타이", "반미", "바나나 튀김", "춘권"]
+	    };
+	
+	    function updateNextSelect(changed) {
+	        if (changed === 'mealType') {
+	            document.getElementById('foodStyle').disabled = false;
+	            document.getElementById('situation').disabled = true;
+	        }
+	        if (changed === 'foodStyle') {
+	            document.getElementById('situation').disabled = false;
+	        }
+	    }
+	
+		let lastKey = null;
+	
+		function getRandomItem(arr) {
+		    return arr[Math.floor(Math.random() * arr.length)];
+		}
+		
+		let theWheel;
+	
+		function setupWheel(menuList) {
+		    // 색상 배열 (메뉴 개수 이상으로 충분히 준비)
+		    const colors = [
+					'#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+			        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+			        '#008080', '#e6beff', '#9a6324', '#fffac8', '#808080',
+			        '#aaffc3', '#808000', '#ffd8b1'
+			];
+	
+		    // 색상을 섞기
+		    const shuffledColors = colors.sort(() => 0.5 - Math.random());
+	
+		    theWheel = new Winwheel({
+		        canvasId: "wheelcanvas",
+		        numSegments: menuList.length,
+		        outerRadius: 200,
+		        textFontSize: 16,
+		        segments: menuList.map((name, idx) => ({
+		            fillStyle: shuffledColors[idx % shuffledColors.length],  // 색을 순환해서 고르게
+		            text: name
+		        })),
+		        animation: {
+		            type: 'spinToStop',
+		            duration: 5,
+		            spins: 8,
+		            callbackFinished: function (indicatedSegment) {
+		                document.getElementById('wheelResult').innerHTML =
+		                    `오늘의 추천 메뉴는 <strong>${indicatedSegment.text}</strong>입니다! 🍽️`;
+		            }
+		        }
+		    });
+		}
+	
+		function spinWheel() {
+		    if (!theWheel) {
+		        alert("먼저 추천할 메뉴를 설정해주세요!");
+		        return;
+		    }
+		    theWheel.startAnimation();
+		}
+		
+		function showIndicator() {
+		  const indicator = document.getElementById('wheel-indicator');
+		  indicator.style.opacity = '1';
+		  indicator.style.animation = 'fadeInDown 0.5s ease forwards';
+		}
+	
+		function recommendMenu() {
+		    const type = document.getElementById("mealType").value;
+		    const category = document.getElementById("foodStyle").value;
+		    const situation = document.getElementById("situation").value;
+	
+		    if (!type || !category || !situation) {
+		        alert("모든 선택지를 선택해주세요!");
+		        return;
+		    }
+	
+		    const key = `${type}_${category}_${situation}`;
+		    lastKey = key;
+	
+		    let menuOptions = menuMap[key];
+	
+		    if (!menuOptions) {
+		        const allMenus = Object.values(menuMap).flat();
+		        const backup = getRandomItem(allMenus);
+		        document.getElementById("wheelResult").innerHTML = `추천할 메뉴가 없어 대신 <strong>${backup}</strong>을 추천해요! 😋`;
+		        return;
+		    }
+	
+		    setupWheel(menuOptions);
+			
+			showIndicator();
+	
+		    setTimeout(() => {
+		        spinWheel();
+		    }, 100);
+			document.getElementById('wheelcanvas').style.display = 'block';
+		}
+		
+		function reRecommendMenu() {
+		    if (!lastKey || !menuMap[lastKey]) {
+		        alert("먼저 추천 버튼을 눌러주세요!");
+		        return;
+		    }
+		    setupWheel(menuMap[lastKey]);
+			
+			setTimeout(() => {
+			       spinWheel();
+			}, 100);
+		}  
+	</script>
+</body>
+</html>
