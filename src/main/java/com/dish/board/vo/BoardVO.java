@@ -23,4 +23,6 @@ public class BoardVO {
     private String modifier;
     private LocalDateTime modifiedTime;
     private String writer;
+    
+    private Long fileMasterId;
 }

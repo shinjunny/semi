@@ -71,4 +71,15 @@ public class BoardServiceImpl implements BoardService {
     public int countBoardsByType(String boardType) {
         return boardMapper.countBoardsByType(boardType);
     }
+    
+    @Override
+    public BoardVO getBoardByNum(int boardNum) {
+        return boardMapper.selectBoardByNum(boardNum);
+    }
+       
+    @Override
+    public boolean deleteBoardByNum(int boardNum) {
+        return boardMapper.deleteBoardByNum(boardNum) > 0;
+    }
+
 }

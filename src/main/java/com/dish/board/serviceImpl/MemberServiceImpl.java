@@ -1,5 +1,7 @@
 package com.dish.board.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -69,5 +71,26 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void updatePassword(String userId, String userPw) {
 		memberMapper.updatePassword(userId, userPw);
+	}
+	
+	@Override
+    public List<MemberVO> getAllMembers() {
+        return memberMapper.selectAllMembers();
+    }
+	
+	@Override
+    public MemberVO getMemberByUserId(String userId) {
+        return memberMapper.selectMemberByUserId(userId);
+    }
+	
+	@Override
+	public boolean deleteMemberByUserId(String userId) {
+	    try {
+	        memberMapper.deleteByUserId(userId);
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 }
