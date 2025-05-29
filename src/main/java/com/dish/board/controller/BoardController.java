@@ -60,6 +60,7 @@ public class BoardController {
         @RequestParam(defaultValue = "10") int size,
         Model model) {
 
+    	// 2025/05/29 손준
         if ("05".equals(boardType)) {
             List<BoardVO> lunchMenus = boardService.getBoardsByType(boardType);
             model.addAttribute("recommendations", lunchMenus);
