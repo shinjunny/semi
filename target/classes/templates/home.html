@@ -185,11 +185,6 @@
 	    <a href="/board/type/04" class="category">푸드 커뮤니티</a>
 	    <a href="/board/type/05" class="category">점심 메뉴 추천</a>
 	</div>
-    <br/>
-	<!-- 로그인 환영 메시지 -->
-    <div th:if="${session.userInfo != null}">
-        <p th:text="${session.userInfo.userId + '님 환영합니다!'}" style="color: green; font-weight: bold;"></p>
-    </div>
     <script>
         function searchPost() {
             var boardType = document.getElementById("boardSelect").value;
