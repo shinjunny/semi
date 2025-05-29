@@ -25,4 +25,8 @@ public interface BoardMapper {
             @Param("offset") int offset);
 
     int countBoardsByType(@Param("boardType") String boardType);
+    
+    BoardVO selectBoardByNum(int boardNum);
+    
+    int deleteBoardByNum(@Param("boardNum") int boardNum);
 }

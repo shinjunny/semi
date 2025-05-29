@@ -1,6 +1,7 @@
 package com.dish.board.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,6 @@ public class MemberVO {
     private LocalDateTime createTime;
     private String modifier;
     private LocalDateTime modifiedTime;
+    
+    private List<BoardVO> boardList;
 }

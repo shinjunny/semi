@@ -18,4 +18,8 @@ public interface BoardService {
     
     List<BoardVO> getBoardsByTypeWithPaging(String boardType, int limit, int offset);
     int countBoardsByType(String boardType);
+    
+    BoardVO getBoardByNum(int boardNum);
+    
+    boolean deleteBoardByNum(int boardNum);
 }
