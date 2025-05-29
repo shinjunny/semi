@@ -41,7 +41,11 @@ public class AttachFileService {
 		this.rootLocation = Paths.get(uploadPath);
 		this.attachFileMapper = attachFileMapper;
 	}
+<<<<<<< Updated upstream
 	
+=======
+
+>>>>>>> Stashed changes
 	public List<AttachFileDetailVO> save(
 			List<MultipartFile> files, 
 			HttpServletRequest request,

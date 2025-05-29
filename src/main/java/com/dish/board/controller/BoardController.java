@@ -140,9 +140,9 @@ public class BoardController {
                                @ModelAttribute CommentVO comment,
                                @RequestParam(value = "fromInfo", defaultValue = "f") String fromInfo,
                                HttpSession session) {
-
+    	
         MemberVO loginUser = (MemberVO) session.getAttribute("userInfo");
-
+        
         log.info(fromInfo);
         if (loginUser != null) {
             comment.setBoardNum(boardNum);
@@ -165,7 +165,7 @@ public class BoardController {
                                   HttpSession session) {
         MemberVO loginUser = (MemberVO) session.getAttribute("userInfo");
         CommentVO comment = commentService.getCommentById(commentId);
-
+        
         if (comment != null && loginUser.getUserId().equals(comment.getWriter())) {
             model.addAttribute("comment", comment);
             model.addAttribute("boardType", boardType);
