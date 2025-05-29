@@ -127,7 +127,6 @@
 		form button:hover {
 		  background-color: #888;
 		}
-
 		p {
 		  text-align: center;
 		  font-size: 18px;
@@ -147,7 +146,6 @@
 	         <a href="/member/login">로그인</a>
 	         <a href="/member/signup">회원가입</a>
 	     </div>
-		 
 	     <!-- 로그아웃 (로그인 상태만 보임) -->
 	     <div th:if="${session.userInfo != null}">
 			<!-- 내 정보 링크 추가 -->
@@ -175,12 +173,10 @@
 	        <option value="04">푸드 커뮤니티</option>
 	        <!-- <option value="05">점심 메뉴 추천</option> -->
 	    </select>
-	
 	    <!-- 제목 검색 -->
 	    <input type="text" id="titleInput" placeholder="제목을 입력하세요." />
 	    <button onclick="searchPost()">검색</button>
 	</div>
-
     <!-- 게시판 링크 -->
 	<div class="category-container">
 	    <a href="/board/type/01" class="category">동네 맛집</a>
@@ -189,7 +185,11 @@
 	    <a href="/board/type/04" class="category">푸드 커뮤니티</a>
 	    <a href="/board/type/05" class="category">점심 메뉴 추천</a>
 	</div>
-
+    <br/>
+	<!-- 로그인 환영 메시지 -->
+    <div th:if="${session.userInfo != null}">
+        <p th:text="${session.userInfo.userId + '님 환영합니다!'}" style="color: green; font-weight: bold;"></p>
+    </div>
     <script>
         function searchPost() {
             var boardType = document.getElementById("boardSelect").value;
@@ -233,7 +233,6 @@
 	          }, 500);
 	        }, 500);
 	      }
-			
       	setInterval(changeFood, 2000);
     </script>
 </body>
