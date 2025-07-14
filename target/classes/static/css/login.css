@@ -1,0 +1,87 @@
+/* 전체 스타일 */
+  * {
+      box-sizing: border-box; /* 모든 요소의 크기 계산에 padding과 border를 포함시킴 */
+  }
+
+  body {
+      margin: 0;
+      background-color: #ffffff;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+  }
+
+  header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      width: 100%;
+      justify-content: center;
+  }
+
+  header img {
+      height: 150px;
+      cursor: pointer;
+      border: #ddd;
+  }
+
+  .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      padding: 0 20px;
+  }
+
+  .login-box {
+      width: 100%;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      background-color: #fff;
+  }
+
+  .login-box h2 {
+      color: #ff7f50;
+      margin-bottom: 1rem;
+  }
+
+  /* input과 button의 스타일 */
+  input, button {
+      width: 100%; /* 너비를 100%로 설정 */
+      padding: 12px;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+  }
+
+  button {
+      background-color: #ff7f50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+  }
+
+  /* 기타 텍스트 스타일 */
+  .small-text {
+      font-size: 0.9rem;
+      color: #888;
+      margin-top: 1rem;
+  }
+
+  a {
+      color: #ff7f50;
+      text-decoration: none;
+      font-weight: bold;
+  }

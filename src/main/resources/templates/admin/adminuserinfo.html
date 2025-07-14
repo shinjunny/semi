@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Pretendard", sans-serif;
+            background-color: #fff;
+            margin: 30px;
+            color: #333;
+        }
+
+        .info-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid #ff7f50;
+            border-radius: 12px;
+            background-color: #fef9f6;
+        }
+
+        h2 {
+            color: #ff7f50;
+            text-align: center;
+        }
+
+        .info-label {
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .info-value {
+            margin-bottom: 10px;
+        }
+
+        .close-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #ff7f50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .close-button:hover {
+            background-color: #ff6f40;
+        }
+		
+		.info-field {
+		    padding: 14px 18px;
+		    margin-bottom: 12px;
+		    background-color: #fff;
+		    border: 1px solid #ffebe2;
+		    border-left: 4px solid #ff7f50;
+		    border-radius: 8px;
+		}
+
+		.label {
+		    font-size: 14px;
+		    font-weight: 600;
+		    color: #888;
+		    margin-bottom: 4px;
+		}
+
+		.value {
+		    font-size: 16px;
+		    font-weight: 500;
+		    color: #333;
+		}
+    </style>
+</head>
+<body>
+<div class="info-container">
+    <h2>회원 정보</h2>
+
+    <div th:if="${error}">
+        <p th:text="${error}" style="color: red; text-align: center;"></p>
+    </div>
+
+    <div th:unless="${error}">
+		<div class="info-field">
+		    <div class="label">회원 아이디</div>
+		    <div class="value" th:text="${member.userId}"></div>
+		</div>
+		<div class="info-field">
+		    <div class="label">회원 이름</div>
+		    <div class="value" th:text="${member.userName}"></div>
+		</div>
+		<div class="info-field">
+		    <div class="label">이메일</div>
+		    <div class="value" th:text="${member.email}">-</div>
+		</div>
+		<div class="info-field">
+		    <div class="label">가입일</div>
+		    <div class="value" th:text="${#temporals.format(member.createTime, 'yyyy-MM-dd HH:mm')}"></div>
+		</div>
+
+        <button class="close-button" onclick="window.close()">창 닫기</button>
+    </div>
+</div>
+</body>
+</html>
