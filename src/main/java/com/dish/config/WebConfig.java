@@ -18,6 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(sessionInterceptor)
 				.addPathPatterns("/board/**")
 				.addPathPatterns("/search/**")
-		        .excludePathPatterns("/member/login", "/member/signup");
+		        .excludePathPatterns("/member/login", 
+		        		"/member/signup", 
+		        		"/board/type/05",
+		        		"/board/type/05*", 
+		        		"/board/type/05/**",
+		        		"/board/type/05*/*");
 	}
 }
